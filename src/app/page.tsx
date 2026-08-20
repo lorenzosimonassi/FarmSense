@@ -10,7 +10,7 @@ import { BenefitsSection } from "@/components/sections/BenefitsSection"
 import { DifferentialsSection } from "@/components/sections/DifferentialsSection"
 import { CTASection } from "@/components/sections/CTASection"
 
-function App() {
+export default function Home() {
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -29,5 +29,3 @@ function App() {
     </div>
   )
 }
-
-export default App

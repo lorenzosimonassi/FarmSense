@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="src/assets/imgs/farmsense-logo-dark.png" alt="FarmSense" width="280" />
+  <img src="public/logo/farmsense-logo-dark.png" alt="FarmSense" width="280" />
 </p>
 
 <p align="center">
@@ -7,7 +7,7 @@
 </p>
 
 <p align="center">
-  <img alt="Vite" src="https://img.shields.io/badge/Vite-646CFF?style=flat-square&logo=vite&logoColor=white" />
+  <img alt="Next.js" src="https://img.shields.io/badge/Next.js_16-black?style=flat-square&logo=next.js&logoColor=white" />
   <img alt="React" src="https://img.shields.io/badge/React-18-61DAFB?style=flat-square&logo=react&logoColor=white" />
   <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white" />
   <img alt="Tailwind CSS" src="https://img.shields.io/badge/Tailwind_CSS_v4-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white" />
@@ -39,15 +39,16 @@ Este repositório é o produto de um **Trabalho de Conclusão de Curso** em Ciê
 
 **Landing page (implementada nesta etapa)**
 
-- [Vite](https://vitejs.dev/) + [React](https://react.dev/) + [TypeScript](https://www.typescriptlang.org/)
+- [Next.js 16](https://nextjs.org/) (App Router) + [React](https://react.dev/) + [TypeScript](https://www.typescriptlang.org/)
 - [Tailwind CSS v4](https://tailwindcss.com/)
 - [shadcn/ui](https://ui.shadcn.com/) (Radix UI + `class-variance-authority`)
 - [Lucide React](https://lucide.dev/) para ícones
 - [Framer Motion](https://www.framer.com/motion/) para animações
+- `next/image` e `next/font` para otimização de imagens e tipografia
 
 **Planejado para o sistema completo**
 
-- API REST em camadas (apresentação, lógica de negócio, persistência)
+- API REST em camadas (apresentação, lógica de negócio, persistência) — via Next.js Route Handlers
 - Banco de dados relacional (PostgreSQL)
 - Autenticação com controle de acesso
 
@@ -63,25 +64,29 @@ npm run dev
 # build de produção
 npm run build
 
+# subir o build de produção
+npm run start
+
 # lint
 npm run lint
 ```
 
-O projeto sobe por padrão em `http://localhost:5173`.
+O projeto sobe por padrão em `http://localhost:3000`.
 
 ## Estrutura
 
 ```
 src/
-├── assets/imgs/        # logo e imagens de marca
+├── app/                  # App Router (layout, page, globals.css, favicon)
 ├── components/
-│   ├── ui/              # primitivos shadcn/ui (Button, Card, Badge, Sheet, Separator)
-│   ├── layout/           # Header e Footer
-│   ├── sections/         # seções da landing page (Hero, Features, Dashboard...)
-│   ├── dashboard/        # mockups do painel (stat cards, gráficos)
-│   └── shared/           # utilitários compartilhados (animações de scroll)
-├── lib/                  # helpers (cn, etc.)
-└── App.tsx
+│   ├── ui/                # primitivos shadcn/ui (Button, Card, Badge, Sheet, Separator)
+│   ├── layout/             # Header e Footer
+│   ├── sections/           # seções da landing page (Hero, Features, Dashboard...)
+│   ├── dashboard/          # mockups do painel (stat cards, gráficos)
+│   └── shared/             # utilitários compartilhados (animações de scroll)
+└── lib/                    # helpers (cn, etc.)
+public/
+└── logo/                 # imagens de marca (FarmSense)
 ```
 
 ## Contexto acadêmico

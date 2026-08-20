@@ -1,8 +1,10 @@
+import Image from "next/image"
 import { Beef, Wheat, LayoutDashboard, Check } from "lucide-react"
 
 import { Reveal, RevealGroup, RevealItem } from "@/components/shared/Reveal"
 import { Card } from "@/components/ui/card"
-import farmsenseIconWhite from "@/assets/imgs/farmsense-icon-white.png"
+
+const farmsenseIconWhite = "/logo/farmsense-icon-white.png"
 
 const MODULES = [
   {
@@ -44,7 +46,13 @@ export function SolutionSection() {
           {/* Hub */}
           <Reveal className="relative z-10 mx-auto flex w-fit flex-col items-center gap-2">
             <span className="flex size-16 items-center justify-center rounded-2xl bg-primary p-3 shadow-lg shadow-primary/25">
-              <img src={farmsenseIconWhite} alt="" className="h-full w-auto" />
+              <Image
+                src={farmsenseIconWhite}
+                alt=""
+                width={102}
+                height={120}
+                className="h-full w-auto"
+              />
             </span>
             <span className="text-sm font-bold text-foreground">FarmSense</span>
           </Reveal>

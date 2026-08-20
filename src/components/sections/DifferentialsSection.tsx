@@ -1,8 +1,10 @@
+import Image from "next/image"
 import { X, Check } from "lucide-react"
 
 import { Reveal } from "@/components/shared/Reveal"
 import { Card } from "@/components/ui/card"
-import farmsenseIconWhite from "@/assets/imgs/farmsense-icon-white.png"
+
+const farmsenseIconWhite = "/logo/farmsense-icon-white.png"
 
 const TRADITIONAL = [
   "Cadernos",
@@ -68,7 +70,13 @@ export function DifferentialsSection() {
                   <h3 className="mt-1 text-xl font-bold">FarmSense</h3>
                 </div>
                 <span className="flex size-10 items-center justify-center rounded-xl bg-secondary/20 p-2">
-                  <img src={farmsenseIconWhite} alt="" className="h-full w-auto" />
+                  <Image
+                    src={farmsenseIconWhite}
+                    alt=""
+                    width={102}
+                    height={120}
+                    className="h-full w-auto"
+                  />
                 </span>
               </div>
               <ul className="relative flex flex-col gap-3">

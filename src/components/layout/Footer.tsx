@@ -1,5 +1,8 @@
+import Image from "next/image"
+
 import { Separator } from "@/components/ui/separator"
-import farmsenseLogoWhite from "@/assets/imgs/farmsense-logo-white.png"
+
+const farmsenseLogoWhite = "/logo/farmsense-logo-white.png"
 
 const FOOTER_LINKS = [
   { label: "Início", href: "#inicio" },
@@ -16,9 +19,11 @@ export function Footer() {
       <div className="container-page flex flex-col gap-10 py-14 sm:py-16">
         <div className="flex flex-col justify-between gap-8 md:flex-row md:items-start">
           <div className="flex max-w-xs flex-col gap-3">
-            <img
+            <Image
               src={farmsenseLogoWhite}
               alt="FarmSense"
+              width={480}
+              height={124}
               className="h-8 w-auto self-start"
             />
             <p className="text-sm leading-relaxed text-primary-foreground/65">

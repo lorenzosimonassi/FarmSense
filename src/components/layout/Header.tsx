@@ -1,4 +1,7 @@
+"use client"
+
 import { useEffect, useState } from "react"
+import Image from "next/image"
 import { Menu } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -11,7 +14,8 @@ import {
   SheetClose,
 } from "@/components/ui/sheet"
 import { cn } from "@/lib/utils"
-import farmsenseLogo from "@/assets/imgs/farmsense-logo-dark.png"
+
+const farmsenseLogo = "/logo/farmsense-logo-dark.png"
 
 const NAV_LINKS = [
   { label: "Início", href: "#inicio" },
@@ -42,9 +46,12 @@ export function Header() {
     >
       <div className="container-page flex h-16 items-center justify-between sm:h-20">
         <a href="#inicio" className="flex items-center">
-          <img
+          <Image
             src={farmsenseLogo}
             alt="FarmSense"
+            width={480}
+            height={124}
+            priority
             className="h-8 w-auto sm:h-9"
           />
         </a>
@@ -82,9 +89,11 @@ export function Header() {
           <SheetContent side="right" className="w-4/5">
             <SheetHeader>
               <SheetTitle asChild>
-                <img
+                <Image
                   src={farmsenseLogo}
                   alt="FarmSense"
+                  width={480}
+                  height={124}
                   className="h-7 w-auto self-start"
                 />
               </SheetTitle>

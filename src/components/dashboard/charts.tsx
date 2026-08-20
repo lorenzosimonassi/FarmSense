@@ -81,7 +81,14 @@ export function CultureDonutChart({ size = 128 }: { size?: number }) {
   const r = radius - stroke / 2
   const circumference = 2 * Math.PI * r
 
-  let offsetAcc = 0
+  const segments = CULTURE_DATA.reduce<
+    { label: string; color: string; dash: number; offset: number }[]
+  >((acc, d) => {
+    const dash = (d.value / total) * circumference
+    const offset = acc.length > 0 ? acc[acc.length - 1].offset + acc[acc.length - 1].dash : 0
+    acc.push({ label: d.label, color: d.color, dash, offset })
+    return acc
+  }, [])
 
   return (
     <div className="relative shrink-0" style={{ width: size, height: size }}>
@@ -94,26 +101,20 @@ export function CultureDonutChart({ size = 128 }: { size?: number }) {
           stroke="var(--color-muted)"
           strokeWidth={stroke}
         />
-        {CULTURE_DATA.map((d) => {
-          const dash = (d.value / total) * circumference
-          const gap = circumference - dash
-          const circle = (
-            <circle
-              key={d.label}
-              cx={radius}
-              cy={radius}
-              r={r}
-              fill="none"
-              stroke={d.color}
-              strokeWidth={stroke}
-              strokeDasharray={`${dash} ${gap}`}
-              strokeDashoffset={-offsetAcc}
-              strokeLinecap="butt"
-            />
-          )
-          offsetAcc += dash
-          return circle
-        })}
+        {segments.map((s) => (
+          <circle
+            key={s.label}
+            cx={radius}
+            cy={radius}
+            r={r}
+            fill="none"
+            stroke={s.color}
+            strokeWidth={stroke}
+            strokeDasharray={`${s.dash} ${circumference - s.dash}`}
+            strokeDashoffset={-s.offset}
+            strokeLinecap="butt"
+          />
+        ))}
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
         <span className="text-lg font-bold text-foreground">5</span>
