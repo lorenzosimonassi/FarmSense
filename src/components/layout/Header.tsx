@@ -19,7 +19,7 @@ const farmsenseLogo = "/logo/farmsense-logo-dark.png"
 
 const NAV_LINKS = [
   { label: "Início", href: "#inicio" },
-  { label: "Recursos", href: "#recursos" },
+  { label: "Funcionalidades", href: "#recursos" },
   { label: "Dashboard", href: "#dashboard" },
   { label: "Como funciona", href: "#como-funciona" },
   { label: "Benefícios", href: "#beneficios" },
@@ -40,8 +40,8 @@ export function Header() {
       className={cn(
         "fixed inset-x-0 top-0 z-50 transition-all duration-300",
         scrolled
-          ? "border-b border-border bg-background/85 backdrop-blur-md"
-          : "border-b border-transparent bg-transparent"
+          ? "border-b border-border/60 bg-white/70 shadow-sm backdrop-blur-lg"
+          : "border-b border-transparent bg-white"
       )}
     >
       <div className="container-page flex h-16 items-center justify-between sm:h-20">

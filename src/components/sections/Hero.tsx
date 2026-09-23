@@ -1,43 +1,32 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
-import { ArrowRight, PlayCircle, Radio } from "lucide-react"
+import Image from "next/image";
+import { motion } from "framer-motion";
+import { ArrowRight, PlayCircle, Radio } from "lucide-react";
 
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { HeroDashboard } from "@/components/dashboard/HeroDashboard"
+import { Button } from "@/components/ui/button";
+import { HeroDashboard } from "@/components/dashboard/HeroDashboard";
 
 export function Hero() {
   return (
     <section
       id="inicio"
-      className="relative overflow-hidden bg-gradient-to-b from-accent/60 via-background to-background pt-28 pb-20 sm:pt-36 sm:pb-28"
+      className="relative isolate overflow-hidden bg-white pt-28 pb-20 sm:pt-36 sm:pb-28"
     >
-      <div className="pointer-events-none absolute inset-0 -z-10">
-        <div
-          className="absolute inset-0 opacity-[0.4]"
-          style={{
-            backgroundImage:
-              "radial-gradient(circle, var(--color-border) 1px, transparent 1px)",
-            backgroundSize: "28px 28px",
-            maskImage: "linear-gradient(to bottom, black, transparent 70%)",
-          }}
+      <div className="pointer-events-none absolute inset-x-0 top-16 bottom-0 -z-10 sm:top-20">
+        <Image
+          src="/hero/fazenda.png"
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover object-right"
         />
+        <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-background to-transparent" />
       </div>
 
       <div className="container-page grid items-center gap-14 lg:grid-cols-2 lg:gap-10">
         <div className="flex flex-col items-start gap-6">
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <Badge variant="secondary" className="gap-1.5">
-              <Radio className="size-3" />
-              Gestão integrada de propriedades rurais
-            </Badge>
-          </motion.div>
-
           <motion.h1
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
@@ -95,5 +84,5 @@ export function Hero() {
         </div>
       </div>
     </section>
-  )
+  );
 }

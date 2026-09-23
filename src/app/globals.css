@@ -6,42 +6,42 @@
 :root {
   --radius: 0.75rem;
 
-  /* Neutral / surface */
-  --background: oklch(0.985 0.004 106);
-  --foreground: oklch(0.22 0.03 155);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.22 0.03 155);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.22 0.03 155);
+  /* Farm palette — anchors: #173226 (verde), #F7F8F5 (branco), preto */
+  --background: #f7f8f5;
+  --foreground: #14170f;
+  --card: #ffffff;
+  --card-foreground: #14170f;
+  --popover: #ffffff;
+  --popover-foreground: #14170f;
 
-  /* Brand greens */
-  --primary: oklch(0.29 0.06 155);
-  --primary-foreground: oklch(0.98 0.01 120);
-  --secondary: oklch(0.47 0.1 152);
-  --secondary-foreground: oklch(0.98 0.01 120);
+  /* Brand green */
+  --primary: #173226;
+  --primary-foreground: #f7f8f5;
+  --secondary: #2f5642;
+  --secondary-foreground: #f7f8f5;
 
-  --muted: oklch(0.96 0.01 120);
-  --muted-foreground: oklch(0.44 0.03 155);
+  --muted: #edefe4;
+  --muted-foreground: #565d51;
 
-  --accent: oklch(0.94 0.03 140);
-  --accent-foreground: oklch(0.27 0.06 155);
+  --accent: #e7ebe0;
+  --accent-foreground: #173226;
 
-  /* Earthy accent */
-  --earth: oklch(0.62 0.09 55);
-  --earth-foreground: oklch(0.98 0.01 120);
+  /* Earthy accent — alerts / atenção */
+  --earth: #b98a5e;
+  --earth-foreground: #f7f8f5;
 
-  --destructive: oklch(0.58 0.22 27);
-  --destructive-foreground: oklch(0.98 0.01 120);
+  --destructive: #c1402b;
+  --destructive-foreground: #f7f8f5;
 
-  --border: oklch(0.9 0.015 130);
-  --input: oklch(0.9 0.015 130);
-  --ring: oklch(0.47 0.1 152);
+  --border: #e1e4d6;
+  --input: #e1e4d6;
+  --ring: #173226;
 
-  --chart-1: oklch(0.47 0.1 152);
-  --chart-2: oklch(0.62 0.09 55);
-  --chart-3: oklch(0.65 0.12 145);
-  --chart-4: oklch(0.29 0.06 155);
-  --chart-5: oklch(0.75 0.05 130);
+  --chart-1: #2f5642;
+  --chart-2: #b98a5e;
+  --chart-3: #6b8f72;
+  --chart-4: #173226;
+  --chart-5: #8a8f7c;
 }
 
 @theme inline {
