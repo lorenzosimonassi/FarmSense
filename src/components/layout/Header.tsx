@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import Image from "next/image"
+import Link from "next/link"
 import { Menu } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -69,10 +70,12 @@ export function Header() {
         </nav>
 
         <div className="hidden items-center gap-3 lg:flex">
-          <Button variant="ghost" size="sm">
-            Entrar
+          <Button variant="ghost" size="sm" asChild>
+            <Link href="/login">Entrar</Link>
           </Button>
-          <Button size="sm">Começar agora</Button>
+          <Button size="sm" asChild>
+            <Link href="/cadastro">Começar agora</Link>
+          </Button>
         </div>
 
         <Sheet>
@@ -111,8 +114,12 @@ export function Header() {
               ))}
             </nav>
             <div className="mt-auto flex flex-col gap-3 border-t border-border p-6">
-              <Button variant="secondary">Entrar</Button>
-              <Button>Começar agora</Button>
+              <Button variant="secondary" asChild>
+                <Link href="/login">Entrar</Link>
+              </Button>
+              <Button asChild>
+                <Link href="/cadastro">Começar agora</Link>
+              </Button>
             </div>
           </SheetContent>
         </Sheet>

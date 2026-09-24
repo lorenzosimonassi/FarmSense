@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight, PlayCircle, Radio } from "lucide-react";
 
@@ -55,9 +56,11 @@ export function Hero() {
             transition={{ duration: 0.6, delay: 0.15 }}
             className="flex flex-col gap-3 sm:flex-row"
           >
-            <Button size="lg" className="group">
-              Começar agora
-              <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
+            <Button size="lg" className="group" asChild>
+              <Link href="/cadastro">
+                Começar agora
+                <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
+              </Link>
             </Button>
             <Button size="lg" variant="secondary" className="group">
               <PlayCircle className="size-4.5" />

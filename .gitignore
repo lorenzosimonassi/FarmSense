@@ -26,3 +26,9 @@ next-env.d.ts
 *.njsproj
 *.sln
 *.sw?
+
+# Env
+.env
+
+# Prisma
+src/generated/

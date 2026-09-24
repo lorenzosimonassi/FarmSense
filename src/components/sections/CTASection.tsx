@@ -1,3 +1,4 @@
+import Link from "next/link"
 import { ArrowRight, LayoutDashboard } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -33,9 +34,11 @@ export function CTASection() {
                 lugar.
               </p>
               <div className="flex flex-col items-center gap-4 pt-2 sm:flex-row">
-                <Button size="lg" variant="secondary" className="group bg-white text-primary hover:bg-white/90">
-                  Começar agora
-                  <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
+                <Button size="lg" variant="secondary" className="group bg-white text-primary hover:bg-white/90" asChild>
+                  <Link href="/cadastro">
+                    Começar agora
+                    <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
+                  </Link>
                 </Button>
                 <a
                   href="#dashboard"
