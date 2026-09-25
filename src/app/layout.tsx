@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next"
 import { Plus_Jakarta_Sans } from "next/font/google"
 
+import { MotionProvider } from "@/components/shared/MotionProvider"
+
 import "./globals.css"
 
 const plusJakartaSans = Plus_Jakarta_Sans({
@@ -19,6 +21,10 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: "#173226",
+  // Permite ocupar a área do notch (usamos env(safe-area-inset-*) no CSS)
+  viewportFit: "cover",
+  // O teclado virtual redimensiona o layout, mantendo os campos dos formulários visíveis
+  interactiveWidget: "resizes-content",
 }
 
 export default function RootLayout({
@@ -28,7 +34,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR" className={plusJakartaSans.variable}>
-      <body>{children}</body>
+      <body>
+        <MotionProvider>{children}</MotionProvider>
+      </body>
     </html>
   )
 }

@@ -39,13 +39,13 @@ export function Header() {
   return (
     <header
       className={cn(
-        "fixed inset-x-0 top-0 z-50 transition-all duration-300",
+        "fixed inset-x-0 top-0 z-50 pt-[env(safe-area-inset-top)] transition-all duration-300",
         scrolled
           ? "border-b border-border/60 bg-white/70 shadow-sm backdrop-blur-lg"
           : "border-b border-transparent bg-white"
       )}
     >
-      <div className="container-page flex h-16 items-center justify-between sm:h-20">
+      <div className="container-page flex h-(--header-h) items-center justify-between gap-4">
         <a href="#inicio" className="flex items-center">
           <Image
             src={farmsenseLogo}
@@ -57,7 +57,7 @@ export function Header() {
           />
         </a>
 
-        <nav className="hidden items-center gap-8 lg:flex">
+        <nav className="hidden items-center gap-6 lg:flex xl:gap-8">
           {NAV_LINKS.map((link) => (
             <a
               key={link.href}
@@ -89,7 +89,7 @@ export function Header() {
               <Menu className="size-5" />
             </Button>
           </SheetTrigger>
-          <SheetContent side="right" className="w-4/5">
+          <SheetContent side="right" className="w-[85vw]">
             <SheetHeader>
               <SheetTitle asChild>
                 <Image
@@ -101,7 +101,7 @@ export function Header() {
                 />
               </SheetTitle>
             </SheetHeader>
-            <nav className="flex flex-col gap-1 px-6">
+            <nav className="flex flex-col gap-1 overflow-y-auto px-6">
               {NAV_LINKS.map((link) => (
                 <SheetClose asChild key={link.href}>
                   <a

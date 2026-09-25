@@ -29,20 +29,20 @@ const MODULES = [
 
 export function SolutionSection() {
   return (
-    <section className="bg-muted/40 py-20 sm:py-28">
+    <section className="bg-muted/40 section-y">
       <div className="container-page">
         <Reveal className="mx-auto max-w-2xl text-center">
-          <h2 className="text-balance text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
+          <h2 className="text-heading font-extrabold tracking-tight text-foreground">
             Tudo o que você precisa para acompanhar sua propriedade.
           </h2>
-          <p className="mt-4 text-balance text-base leading-relaxed text-muted-foreground sm:text-lg">
+          <p className="mt-4 text-lead text-muted-foreground">
             O FarmSense reúne as principais informações operacionais da
             propriedade em uma única plataforma, conectando pecuária,
             agricultura e gestão em um só lugar.
           </p>
         </Reveal>
 
-        <div className="relative mt-16">
+        <div className="relative mt-12 sm:mt-16">
           {/* Hub */}
           <Reveal className="relative z-10 mx-auto flex w-fit flex-col items-center gap-2">
             <span className="flex size-16 items-center justify-center rounded-2xl bg-primary p-3 shadow-lg shadow-primary/25">

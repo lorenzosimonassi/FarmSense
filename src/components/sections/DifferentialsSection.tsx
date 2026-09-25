@@ -24,17 +24,17 @@ const FARMSENSE = [
 
 export function DifferentialsSection() {
   return (
-    <section className="py-20 sm:py-28">
+    <section className="section-y">
       <div className="container-page">
         <Reveal className="mx-auto max-w-2xl text-center">
-          <h2 className="text-balance text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
+          <h2 className="text-heading font-extrabold tracking-tight text-foreground">
             Uma visão completa da sua propriedade.
           </h2>
         </Reveal>
 
         <div className="mt-14 grid gap-6 md:grid-cols-2 md:items-stretch">
           <Reveal>
-            <Card className="h-full gap-6 border-border bg-muted/50 p-8">
+            <Card className="h-full gap-6 border-border bg-muted/50 p-6 sm:p-8">
               <div>
                 <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                   Hoje
@@ -60,7 +60,7 @@ export function DifferentialsSection() {
           </Reveal>
 
           <Reveal delay={0.1}>
-            <Card className="relative h-full gap-6 overflow-hidden border-primary bg-primary p-8 text-primary-foreground shadow-xl shadow-primary/20 md:scale-[1.03]">
+            <Card className="relative h-full gap-6 overflow-hidden border-primary bg-primary p-6 text-primary-foreground shadow-xl shadow-primary/20 sm:p-8 md:scale-[1.03]">
               <div className="pointer-events-none absolute -right-10 -top-10 size-40 rounded-full bg-secondary/20 blur-2xl" />
               <div className="relative flex items-center justify-between">
                 <div>

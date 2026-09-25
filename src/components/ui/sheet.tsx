@@ -51,8 +51,8 @@ const sheetVariants = cva(
     variants: {
       side: {
         right:
-          "data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right inset-y-0 right-0 h-full w-3/4 max-w-sm border-l",
-        left: "data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left inset-y-0 left-0 h-full w-3/4 max-w-sm border-r",
+          "data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right inset-y-0 right-0 h-dvh w-3/4 max-w-sm border-l pt-[env(safe-area-inset-top)] pr-[env(safe-area-inset-right)] pb-[env(safe-area-inset-bottom)]",
+        left: "data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left inset-y-0 left-0 h-dvh w-3/4 max-w-sm border-r pt-[env(safe-area-inset-top)] pl-[env(safe-area-inset-left)] pb-[env(safe-area-inset-bottom)]",
         top: "data-[state=closed]:slide-out-to-top data-[state=open]:slide-in-from-top inset-x-0 top-0 h-auto border-b",
         bottom:
           "data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom inset-x-0 bottom-0 h-auto border-t",
@@ -80,7 +80,7 @@ function SheetContent({
         {...props}
       >
         {children}
-        <SheetPrimitive.Close className="ring-offset-background focus:ring-ring absolute top-4 right-4 rounded-full p-2 opacity-70 transition-opacity hover:opacity-100 hover:bg-accent focus:ring-2 focus:outline-none disabled:pointer-events-none">
+        <SheetPrimitive.Close className="ring-offset-background focus:ring-ring absolute top-[calc(env(safe-area-inset-top)+1rem)] right-[calc(env(safe-area-inset-right)+1rem)] rounded-full p-2 pointer-coarse:p-3 opacity-70 transition-opacity hover:opacity-100 hover:bg-accent focus:ring-2 focus:outline-none disabled:pointer-events-none">
           <X className="size-4" />
           <span className="sr-only">Fechar</span>
         </SheetPrimitive.Close>

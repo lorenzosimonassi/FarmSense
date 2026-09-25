@@ -17,7 +17,7 @@ import { WeightLineChart } from "@/components/dashboard/charts";
 
 export function HeroDashboard() {
   return (
-    <div className="relative">
+    <div className="@container relative">
       <motion.div
         initial={{ opacity: 0, y: 28, scale: 0.98 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -29,13 +29,13 @@ export function HeroDashboard() {
           <span className="size-2.5 rounded-full bg-destructive/60" />
           <span className="size-2.5 rounded-full bg-chart-2/60" />
           <span className="size-2.5 rounded-full bg-secondary/60" />
-          <span className="ml-3 text-xs font-medium text-muted-foreground">
+          <span className="ml-3 truncate text-xs font-medium text-muted-foreground">
             FarmSense — Painel geral
           </span>
         </div>
 
-        <div className="grid gap-4 p-4 sm:p-5 md:grid-cols-5">
-          <div className="grid grid-cols-2 gap-3 md:col-span-3 md:grid-cols-2">
+        <div className="grid gap-3 p-3 @sm:gap-4 @sm:p-4 @md:p-5 @lg:grid-cols-5">
+          <div className="grid grid-cols-2 gap-3 @lg:col-span-3">
             <StatCard
               icon={Beef}
               label="Total de animais"
@@ -63,7 +63,7 @@ export function HeroDashboard() {
             />
           </div>
 
-          <div className="flex flex-col justify-between gap-3 rounded-xl border border-border bg-gradient-to-br from-primary to-primary/85 p-4 text-primary-foreground md:col-span-2">
+          <div className="flex flex-col justify-between gap-3 rounded-xl border border-border bg-gradient-to-br from-primary to-primary/85 p-4 text-primary-foreground @lg:col-span-2">
             <div className="flex items-center justify-between">
               <span className="text-xs font-medium text-primary-foreground/70">
                 Evolução do peso médio
@@ -71,21 +71,21 @@ export function HeroDashboard() {
               <TrendingUp className="size-4 text-gray-100" strokeWidth={2.5} />
             </div>
             <WeightLineChart className="h-16 w-full text-primary-foreground" />
-            <div className="flex items-end justify-between">
-              <span className="text-2xl font-bold">412 kg</span>
-              <span className="text-xs font-semibold text-gray-100">
+            <div className="flex flex-wrap items-end justify-between gap-x-3 gap-y-1">
+              <span className="text-2xl font-bold whitespace-nowrap">412 kg</span>
+              <span className="text-xs font-semibold whitespace-nowrap text-gray-100">
                 ↑ 8% em 6 meses
               </span>
             </div>
           </div>
         </div>
 
-        <div className="flex flex-col gap-3 border-t border-border bg-muted/40 p-4 sm:p-5">
+        <div className="flex flex-col gap-3 border-t border-border bg-muted/40 p-3 @sm:p-4 @md:p-5">
           <div className="flex items-center gap-2 text-xs font-semibold text-foreground">
             <Bell className="size-3.5 text-earth" />
             Alertas operacionais
           </div>
-          <div className="grid gap-2 sm:grid-cols-3">
+          <div className="grid gap-2 @lg:grid-cols-3">
             <AlertPill icon={Syringe} text="Vacinação próxima do vencimento" />
             <AlertPill icon={CalendarClock} text="Colheita em 18 dias" />
             <AlertPill

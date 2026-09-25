@@ -26,19 +26,19 @@ const PROBLEMS = [
 
 export function ProblemSection() {
   return (
-    <section className="py-20 sm:py-28">
+    <section className="section-y">
       <div className="container-page">
         <Reveal className="mx-auto max-w-2xl text-center">
-          <h2 className="text-balance text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
+          <h2 className="text-heading font-extrabold tracking-tight text-foreground">
             Menos planilhas. Mais controle.
           </h2>
-          <p className="mt-4 text-balance text-base leading-relaxed text-muted-foreground sm:text-lg">
+          <p className="mt-4 text-lead text-muted-foreground">
             Anotações espalhadas, planilhas desconectadas e informações difíceis
             de encontrar tornam a gestão da propriedade mais trabalhosa.
           </p>
         </Reveal>
 
-        <RevealGroup className="mt-14 grid gap-5 sm:grid-cols-3">
+        <RevealGroup className="mt-14 grid gap-5 md:grid-cols-3">
           {PROBLEMS.map((p) => (
             <RevealItem key={p.title}>
               <Card className="group h-full gap-4 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/5">

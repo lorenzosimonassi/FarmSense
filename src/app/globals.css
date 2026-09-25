@@ -80,6 +80,14 @@
 
   --font-sans: var(--font-plus-jakarta), "Inter", ui-sans-serif, system-ui, sans-serif;
 
+  /* Tipografia fluida: escala suavemente entre smartphone (~360px) e notebook (~1440px) */
+  --text-display: clamp(2.25rem, 1.6rem + 2.9vw, 3.4rem);
+  --text-display--line-height: 1.08;
+  --text-heading: clamp(1.75rem, 1.4rem + 1.5vw, 2.25rem);
+  --text-heading--line-height: 1.15;
+  --text-lead: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+  --text-lead--line-height: 1.65;
+
   --animate-fade-in: fade-in 0.7s ease-out forwards;
   --animate-fade-in-up: fade-in-up 0.7s ease-out forwards;
 
@@ -98,17 +106,42 @@
     @apply border-border outline-ring/50;
   }
   html {
-    scroll-behavior: smooth;
+    /* Âncoras não ficam escondidas atrás do header fixo */
+    scroll-padding-top: calc(var(--header-h) + env(safe-area-inset-top) + 1rem);
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+    --header-h: 4rem;
+
+    @variant sm {
+      --header-h: 5rem;
+    }
+    @media (prefers-reduced-motion: no-preference) {
+      scroll-behavior: smooth;
+    }
   }
   body {
     @apply bg-background text-foreground font-sans antialiased;
-    overflow-x: hidden;
+    overflow-x: clip;
+  }
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
   }
 }
 
 @layer utilities {
   .container-page {
-    @apply mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8;
+    @apply mx-auto w-full max-w-7xl;
+    /* Gutter fluido que respeita o notch / áreas seguras do aparelho */
+    padding-inline: max(clamp(1rem, 0.6rem + 2vw, 2rem), env(safe-area-inset-left), env(safe-area-inset-right));
+  }
+  .section-y {
+    padding-block: clamp(4rem, 2.8rem + 5vw, 7rem);
   }
   .text-balance {
     text-wrap: balance;

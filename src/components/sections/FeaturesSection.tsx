@@ -50,18 +50,18 @@ const FEATURES = [
 
 export function FeaturesSection() {
   return (
-    <section id="recursos" className="py-20 sm:py-28">
+    <section id="recursos" className="section-y">
       <div className="container-page">
         <Reveal className="mx-auto max-w-2xl text-center">
           <span className="text-sm font-semibold uppercase tracking-wider text-secondary">
             Recursos
           </span>
-          <h2 className="mt-3 text-balance text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
+          <h2 className="mt-3 text-heading font-extrabold tracking-tight text-foreground">
             Funcionalidades pensadas para a rotina do produtor.
           </h2>
         </Reveal>
 
-        <RevealGroup className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <RevealGroup className="mt-14 grid gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3">
           {FEATURES.map((f) => (
             <RevealItem key={f.title}>
               <Card className="group relative h-full gap-5 overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:border-secondary/30 hover:shadow-lg">

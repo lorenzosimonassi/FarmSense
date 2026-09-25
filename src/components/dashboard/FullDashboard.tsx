@@ -57,13 +57,13 @@ const toneStyles = {
 
 export function FullDashboard() {
   return (
-    <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-2xl shadow-primary/10">
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border bg-muted/50 px-5 py-4 sm:px-6">
-        <div className="flex items-center gap-2">
-          <span className="size-2.5 rounded-full bg-destructive/60" />
-          <span className="size-2.5 rounded-full bg-chart-2/60" />
-          <span className="size-2.5 rounded-full bg-secondary/60" />
-          <span className="ml-3 text-sm font-semibold text-foreground">
+    <div className="@container overflow-hidden rounded-2xl border border-border bg-card shadow-2xl shadow-primary/10">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border bg-muted/50 px-4 py-3 @md:px-6 @md:py-4">
+        <div className="flex min-w-0 items-center gap-2">
+          <span className="size-2.5 shrink-0 rounded-full bg-destructive/60" />
+          <span className="size-2.5 shrink-0 rounded-full bg-chart-2/60" />
+          <span className="size-2.5 shrink-0 rounded-full bg-secondary/60" />
+          <span className="ml-3 truncate text-sm font-semibold text-foreground">
             Painel geral da propriedade
           </span>
         </div>
@@ -73,17 +73,17 @@ export function FullDashboard() {
         </span>
       </div>
 
-      <div className="grid gap-5 p-5 sm:p-6 lg:grid-cols-[1fr_300px]">
-        <div className="flex flex-col gap-5">
+      <div className="grid gap-4 p-3 @sm:p-4 @md:gap-5 @md:p-6 @4xl:grid-cols-[minmax(0,1fr)_300px]">
+        <div className="@container/main flex min-w-0 flex-col gap-4 @md:gap-5">
           <Reveal>
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+            <div className="grid grid-cols-2 gap-3 @lg/main:grid-cols-3">
               {STATS.map((s) => (
                 <StatCard key={s.label} {...s} />
               ))}
             </div>
           </Reveal>
 
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="grid gap-4 @xl/main:grid-cols-2">
             <Reveal delay={0.05} className="flex flex-col gap-4 rounded-xl border border-border bg-background p-4 sm:p-5">
               <div className="flex items-center justify-between">
                 <div>
@@ -104,7 +104,7 @@ export function FullDashboard() {
                 </p>
                 <p className="text-xs text-muted-foreground">Por área plantada</p>
               </div>
-              <div className="flex items-center gap-5">
+              <div className="flex flex-wrap items-center gap-5">
                 <CultureDonutChart size={104} />
                 <CultureLegend />
               </div>
@@ -125,7 +125,8 @@ export function FullDashboard() {
             <AlertTriangle className="size-4 text-earth" />
             <p className="text-sm font-semibold text-foreground">Alertas</p>
           </div>
-          <div className="flex flex-col gap-3">
+          {/* Empilhados na coluna lateral; lado a lado quando o painel quebra para uma coluna */}
+          <div className="grid gap-3 @2xl:grid-cols-3 @4xl:grid-cols-1">
             {ALERTS.map((a) => (
               <div
                 key={a.title}

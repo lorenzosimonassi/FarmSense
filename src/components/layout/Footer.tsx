@@ -16,7 +16,7 @@ const FOOTER_LINKS = [
 export function Footer() {
   return (
     <footer className="bg-primary text-primary-foreground">
-      <div className="container-page flex flex-col gap-10 py-14 sm:py-16">
+      <div className="container-page flex flex-col gap-10 pt-14 pb-[max(3.5rem,env(safe-area-inset-bottom))] sm:pt-16 sm:pb-16">
         <div className="flex flex-col justify-between gap-8 md:flex-row md:items-start">
           <div className="flex max-w-xs flex-col gap-3">
             <Image
@@ -31,12 +31,12 @@ export function Footer() {
             </p>
           </div>
 
-          <nav className="grid grid-cols-2 gap-x-10 gap-y-3 sm:grid-cols-3">
+          <nav className="grid grid-cols-2 gap-x-10 gap-y-1 sm:grid-cols-3 sm:gap-y-3">
             {FOOTER_LINKS.map((link) => (
               <a
                 key={link.href}
                 href={link.href}
-                className="text-sm text-primary-foreground/70 transition-colors hover:text-primary-foreground"
+                className="py-2 text-sm text-primary-foreground/70 transition-colors hover:text-primary-foreground sm:py-0"
               >
                 {link.label}
               </a>

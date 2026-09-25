@@ -126,7 +126,7 @@ export function CultureDonutChart({ size = 128 }: { size?: number }) {
 
 export function CultureLegend() {
   return (
-    <ul className="flex flex-col gap-2">
+    <ul className="flex min-w-32 flex-1 flex-col gap-2">
       {CULTURE_DATA.map((d) => (
         <li key={d.label} className="flex items-center justify-between gap-3 text-xs">
           <span className="flex items-center gap-2 text-muted-foreground">
