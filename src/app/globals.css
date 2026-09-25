@@ -42,6 +42,23 @@
   --chart-3: #6b8f72;
   --chart-4: #173226;
   --chart-5: #8a8f7c;
+
+  /* Séries dos gráficos do painel — ordem fixa, validada (daltonismo, contraste, todos os pares) */
+  --series-1: #2b7440; /* verde lavoura */
+  --series-2: #c38123; /* âmbar trigo */
+  --series-3: #2b77b0; /* azul água */
+  --series-4: #954a7e; /* ameixa */
+
+  /* Status — reservados, sempre acompanhados de ícone + rótulo */
+  --status-good: #2f7a4b;
+  --status-warning: #b7791f;
+  --status-critical: #c1402b;
+
+  /* Sidebar do painel */
+  --sidebar: #173226;
+  --sidebar-foreground: #f7f8f5;
+  --sidebar-accent: #234a38;
+  --sidebar-border: #26463a;
 }
 
 @theme inline {
@@ -72,6 +89,20 @@
   --color-chart-3: var(--chart-3);
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
+
+  --color-series-1: var(--series-1);
+  --color-series-2: var(--series-2);
+  --color-series-3: var(--series-3);
+  --color-series-4: var(--series-4);
+
+  --color-status-good: var(--status-good);
+  --color-status-warning: var(--status-warning);
+  --color-status-critical: var(--status-critical);
+
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-border: var(--sidebar-border);
 
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -145,5 +176,32 @@
   }
   .text-balance {
     text-wrap: balance;
+  }
+}
+
+/* Contagem animada dos KPIs só com CSS: o valor final já vem no HTML, sem JS e sem "piscar" na hidratação */
+@property --count {
+  syntax: "<integer>";
+  initial-value: 0;
+  inherits: false;
+}
+
+@layer components {
+  .count-up {
+    --count: var(--to);
+    counter-reset: count var(--count);
+  }
+  .count-up::after {
+    content: counter(count);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .count-up {
+      animation: count-up 1.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+  }
+  @keyframes count-up {
+    from {
+      --count: 0;
+    }
   }
 }
