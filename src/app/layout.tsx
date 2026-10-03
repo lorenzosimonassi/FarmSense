@@ -1,20 +1,25 @@
 import type { Metadata, Viewport } from "next"
-import { Plus_Jakarta_Sans } from "next/font/google"
+import { Bricolage_Grotesque, Geist } from "next/font/google"
 
 import { MotionProvider } from "@/components/shared/MotionProvider"
 
 import "./globals.css"
 
-const plusJakartaSans = Plus_Jakarta_Sans({
+// Geist: texto, interface e números · Bricolage Grotesque: títulos
+const geist = Geist({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
-  style: ["normal", "italic"],
-  variable: "--font-plus-jakarta",
+  variable: "--font-geist",
+  display: "swap",
+})
+
+const bricolage = Bricolage_Grotesque({
+  subsets: ["latin"],
+  variable: "--font-bricolage",
   display: "swap",
 })
 
 export const metadata: Metadata = {
-  title: "FarmSense — Gestão inteligente da sua propriedade rural",
+  title: "FarmSense | Gestão da sua propriedade rural",
   description:
     "FarmSense centraliza a gestão da sua propriedade rural em um único lugar, integrando pecuária, agricultura e indicadores para facilitar sua rotina e apoiar suas decisões.",
 }
@@ -33,7 +38,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="pt-BR" className={plusJakartaSans.variable}>
+    <html lang="pt-BR" className={`${geist.variable} ${bricolage.variable}`}>
       <body>
         <MotionProvider>{children}</MotionProvider>
       </body>

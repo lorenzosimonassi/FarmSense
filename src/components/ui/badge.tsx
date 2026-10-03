@@ -11,8 +11,8 @@ const badgeVariants = cva(
       variant: {
         default: "border-transparent bg-primary text-primary-foreground",
         secondary: "border-transparent bg-accent text-accent-foreground",
-        outline: "border-border bg-white text-foreground",
-        earth: "border-transparent bg-earth/15 text-earth",
+        outline: "border-border bg-card text-foreground",
+        milho: "border-transparent bg-milho text-milho-foreground",
       },
     },
     defaultVariants: {

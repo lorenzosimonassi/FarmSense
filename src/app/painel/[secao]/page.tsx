@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button"
 
 export async function generateMetadata(props: PageProps<"/painel/[secao]">): Promise<Metadata> {
   const { secao } = await props.params
-  return { title: `${findSection(secao)?.label ?? "Painel"} — FarmSense` }
+  return { title: `${findSection(secao)?.label ?? "Painel"} | FarmSense` }
 }
 
 // Módulos ainda não construídos: mantém a navegação funcionando sem links quebrados

@@ -5,7 +5,7 @@ import { SignUpForm } from "@/components/auth/SignUpForm"
 import { isGoogleEnabled } from "@/lib/auth"
 
 export const metadata: Metadata = {
-  title: "Criar conta — FarmSense",
+  title: "Criar conta | FarmSense",
 }
 
 export default function SignUpPage() {

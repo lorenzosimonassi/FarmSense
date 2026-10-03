@@ -99,7 +99,7 @@ function SidebarLink({
       )}
     >
       {active && (
-        <span aria-hidden className="absolute top-2 bottom-2 left-0 w-0.75 rounded-r-full bg-earth" />
+        <span aria-hidden className="absolute top-2 bottom-2 left-0 w-0.75 rounded-r-full bg-milho" />
       )}
       <item.icon className="size-4.5 shrink-0" strokeWidth={2} />
       {!collapsed && <span className="truncate">{item.label}</span>}

@@ -5,7 +5,7 @@ import { MailCheck } from "lucide-react"
 import { ResendVerificationButton } from "@/components/auth/ResendVerificationButton"
 
 export const metadata: Metadata = {
-  title: "Confirme seu e-mail — FarmSense",
+  title: "Confirme seu e-mail | FarmSense",
 }
 
 export default async function VerifyEmailPage(props: PageProps<"/verificar-email">) {

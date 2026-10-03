@@ -3,7 +3,7 @@ import type { Metadata } from "next"
 import { ForgotPasswordForm } from "@/components/auth/ForgotPasswordForm"
 
 export const metadata: Metadata = {
-  title: "Esqueci minha senha — FarmSense",
+  title: "Esqueci minha senha | FarmSense",
 }
 
 export default function ForgotPasswordPage() {

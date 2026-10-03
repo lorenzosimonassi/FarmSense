@@ -6,7 +6,7 @@ import { ResetPasswordForm } from "@/components/auth/ResetPasswordForm"
 import { Button } from "@/components/ui/button"
 
 export const metadata: Metadata = {
-  title: "Redefinir senha — FarmSense",
+  title: "Redefinir senha | FarmSense",
 }
 
 // O link do e-mail passa pelo Better Auth, que redireciona para cá com ?token=... ou ?error=INVALID_TOKEN

@@ -12,7 +12,7 @@ import { auth } from "@/lib/auth"
 import { FARM, KPIS } from "@/lib/mock/painel"
 
 export const metadata: Metadata = {
-  title: "Visão geral — FarmSense",
+  title: "Visão geral | FarmSense",
 }
 
 const KPI_ICONS = { animais: <Beef />, peso: <Scale />, area: <Wheat />, vacinas: <Syringe /> }

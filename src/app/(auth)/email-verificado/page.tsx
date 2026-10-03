@@ -5,7 +5,7 @@ import { CircleAlert, CircleCheck } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 export const metadata: Metadata = {
-  title: "Verificação de e-mail — FarmSense",
+  title: "Verificação de e-mail | FarmSense",
 }
 
 // O Better Auth redireciona para cá após clicar no link; em caso de falha, envia ?error=...

@@ -6,7 +6,7 @@ import { SignInForm } from "@/components/auth/SignInForm"
 import { isGoogleEnabled } from "@/lib/auth"
 
 export const metadata: Metadata = {
-  title: "Entrar — FarmSense",
+  title: "Entrar | FarmSense",
 }
 
 export default async function SignInPage(props: PageProps<"/login">) {

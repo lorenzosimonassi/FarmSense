@@ -4,44 +4,48 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --radius: 0.75rem;
+  /* Raios: controles (botão, input) 10px · contêineres (card, painel, foto) 16px · badges em pílula */
+  --radius: 0.625rem;
+  --radius-box: 1rem;
 
-  /* Farm palette — anchors: #173226 (verde), #F7F8F5 (branco), preto */
-  --background: #f7f8f5;
-  --foreground: #14170f;
+  /* Paleta "campo organizado" — Mata (marca) + Orvalho (fundo) + Milho (único acento) */
+  --mata: #173226;
+  --mata-clara: #2f5642;
+  --orvalho: #f6f7f3;
+  --grafite: #15191a;
+  --capim: #5c6658;
+  --milho: #e0a526;
+
+  --background: var(--orvalho);
+  --foreground: var(--grafite);
   --card: #ffffff;
-  --card-foreground: #14170f;
+  --card-foreground: var(--grafite);
   --popover: #ffffff;
-  --popover-foreground: #14170f;
+  --popover-foreground: var(--grafite);
 
-  /* Brand green */
-  --primary: #173226;
-  --primary-foreground: #f7f8f5;
-  --secondary: #2f5642;
-  --secondary-foreground: #f7f8f5;
+  --primary: var(--mata);
+  --primary-foreground: var(--orvalho);
+  --secondary: var(--mata-clara);
+  --secondary-foreground: var(--orvalho);
 
-  --muted: #edefe4;
-  --muted-foreground: #565d51;
+  --muted: #eceee6;
+  --muted-foreground: var(--capim);
 
-  --accent: #e7ebe0;
-  --accent-foreground: #173226;
+  --accent: #e6eadf;
+  --accent-foreground: var(--mata);
 
-  /* Earthy accent — alerts / atenção */
-  --earth: #b98a5e;
-  --earth-foreground: #f7f8f5;
+  /* Acento — usado com parcimônia, quase sempre sobre a Mata (texto em Mata sobre Milho: 6,4:1) */
+  --milho-foreground: var(--mata);
 
   --destructive: #c1402b;
-  --destructive-foreground: #f7f8f5;
+  --destructive-foreground: var(--orvalho);
 
-  --border: #e1e4d6;
-  --input: #e1e4d6;
-  --ring: #173226;
+  --border: #dde2d6;
+  --input: #c9d0c1;
+  --ring: var(--mata-clara);
 
-  --chart-1: #2f5642;
-  --chart-2: #b98a5e;
-  --chart-3: #6b8f72;
-  --chart-4: #173226;
-  --chart-5: #8a8f7c;
+  /* Sombras tingidas de verde, só onde há elevação real */
+  --shadow-color: 150 37% 14%;
 
   /* Séries dos gráficos do painel — ordem fixa, validada (daltonismo, contraste, todos os pares) */
   --series-1: #2b7440; /* verde lavoura */
@@ -55,8 +59,8 @@
   --status-critical: #c1402b;
 
   /* Sidebar do painel */
-  --sidebar: #173226;
-  --sidebar-foreground: #f7f8f5;
+  --sidebar: var(--mata);
+  --sidebar-foreground: var(--orvalho);
   --sidebar-accent: #234a38;
   --sidebar-border: #26463a;
 }
@@ -76,19 +80,14 @@
   --color-muted-foreground: var(--muted-foreground);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
-  --color-earth: var(--earth);
-  --color-earth-foreground: var(--earth-foreground);
+  --color-milho: var(--milho);
+  --color-milho-foreground: var(--milho-foreground);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
 
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
 
   --color-series-1: var(--series-1);
   --color-series-2: var(--series-2);
@@ -107,9 +106,16 @@
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
+  --radius-xl: var(--radius-box);
+  --radius-2xl: var(--radius-box);
 
-  --font-sans: var(--font-plus-jakarta), "Inter", ui-sans-serif, system-ui, sans-serif;
+  --shadow-xs: 0 1px 2px hsl(var(--shadow-color) / 0.06);
+  --shadow-sm: 0 1px 3px hsl(var(--shadow-color) / 0.08), 0 1px 2px hsl(var(--shadow-color) / 0.05);
+  --shadow-md: 0 6px 16px -4px hsl(var(--shadow-color) / 0.12), 0 2px 4px hsl(var(--shadow-color) / 0.06);
+  --shadow-lg: 0 18px 40px -12px hsl(var(--shadow-color) / 0.22), 0 4px 10px hsl(var(--shadow-color) / 0.08);
+
+  --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-bricolage), var(--font-geist), ui-sans-serif, system-ui, sans-serif;
 
   /* Tipografia fluida: escala suavemente entre smartphone (~360px) e notebook (~1440px) */
   --text-display: clamp(2.25rem, 1.6rem + 2.9vw, 3.4rem);
@@ -158,6 +164,7 @@
   h1,
   h2,
   h3 {
+    @apply font-display;
     text-wrap: balance;
   }
   p {
