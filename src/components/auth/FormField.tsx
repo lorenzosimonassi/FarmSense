@@ -5,11 +5,15 @@ type FormFieldProps = React.ComponentProps<"input"> & {
   label: string
   name: string
   error?: string
+  // Ajuda abaixo do campo (nunca como placeholder, que some ao digitar)
+  hint?: string
   labelAction?: React.ReactNode
 }
 
-export function FormField({ label, name, error, labelAction, ...props }: FormFieldProps) {
+export function FormField({ label, name, error, hint, labelAction, ...props }: FormFieldProps) {
   const errorId = `${name}-error`
+  const hintId = `${name}-hint`
+  const describedBy = [hint && hintId, error && errorId].filter(Boolean).join(" ") || undefined
 
   return (
     <div className="flex flex-col gap-2">
@@ -21,9 +25,14 @@ export function FormField({ label, name, error, labelAction, ...props }: FormFie
         id={name}
         name={name}
         aria-invalid={Boolean(error)}
-        aria-describedby={error ? errorId : undefined}
+        aria-describedby={describedBy}
         {...props}
       />
+      {hint && (
+        <p id={hintId} className="text-[13px] text-muted-foreground">
+          {hint}
+        </p>
+      )}
       {error && (
         <p id={errorId} className="text-[13px] text-destructive">
           {error}

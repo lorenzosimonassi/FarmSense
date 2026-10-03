@@ -16,7 +16,7 @@ export default async function SignInPage(props: PageProps<"/login">) {
   return (
     <>
       <div className="mb-8">
-        <h1 className="text-2xl font-bold tracking-tight">Bem-vindo de volta</h1>
+        <h1 className="text-[1.875rem] leading-tight font-bold tracking-tight">Entrar na sua conta</h1>
         <p className="mt-2 text-sm text-muted-foreground">Entre com seu e-mail e senha para acessar o painel.</p>
       </div>
       <div className="flex flex-col gap-5">

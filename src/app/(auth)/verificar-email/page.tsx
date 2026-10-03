@@ -18,7 +18,7 @@ export default async function VerifyEmailPage(props: PageProps<"/verificar-email
         <MailCheck className="size-6" />
       </div>
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">Confirme seu e-mail</h1>
+        <h1 className="text-[1.875rem] leading-tight font-bold tracking-tight">Confirme seu e-mail</h1>
         <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
           Enviamos um link de confirmação para{" "}
           {address ? <strong className="text-foreground">{address}</strong> : "o seu e-mail"}. Clique nele para

@@ -12,7 +12,7 @@ export default function SignUpPage() {
   return (
     <>
       <div className="mb-8">
-        <h1 className="text-2xl font-bold tracking-tight">Crie sua conta</h1>
+        <h1 className="text-[1.875rem] leading-tight font-bold tracking-tight">Crie sua conta</h1>
         <p className="mt-2 text-sm text-muted-foreground">
           Comece a organizar a gestão da sua propriedade em poucos minutos.
         </p>

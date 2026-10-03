@@ -20,7 +20,7 @@ export default async function ResetPasswordPage(props: PageProps<"/redefinir-sen
           <CircleAlert className="size-6" />
         </div>
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Link inválido ou expirado</h1>
+          <h1 className="text-[1.875rem] leading-tight font-bold tracking-tight">Link inválido ou expirado</h1>
           <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
             Os links de redefinição valem por 1 hora e só podem ser usados uma vez. Peça um novo para continuar.
           </p>
@@ -35,7 +35,7 @@ export default async function ResetPasswordPage(props: PageProps<"/redefinir-sen
   return (
     <>
       <div className="mb-8">
-        <h1 className="text-2xl font-bold tracking-tight">Crie uma nova senha</h1>
+        <h1 className="text-[1.875rem] leading-tight font-bold tracking-tight">Crie uma nova senha</h1>
         <p className="mt-2 text-sm text-muted-foreground">Escolha uma senha que você não use em outros sites.</p>
       </div>
       <ResetPasswordForm token={token} />

@@ -67,7 +67,7 @@ export function SignUpForm() {
         name="password"
         type="password"
         autoComplete="new-password"
-        placeholder="Mínimo de 8 caracteres, com letras e números"
+        hint="Mínimo de 8 caracteres, com letras e números"
         error={errors.password}
       />
       <FormField

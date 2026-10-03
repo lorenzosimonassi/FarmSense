@@ -19,7 +19,7 @@ export default async function EmailVerifiedPage(props: PageProps<"/email-verific
           <CircleAlert className="size-6" />
         </div>
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Link inválido ou expirado</h1>
+          <h1 className="text-[1.875rem] leading-tight font-bold tracking-tight">Link inválido ou expirado</h1>
           <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
             Não foi possível confirmar seu e-mail. Tente entrar novamente para receber um novo link.
           </p>
@@ -37,7 +37,7 @@ export default async function EmailVerifiedPage(props: PageProps<"/email-verific
         <CircleCheck className="size-6" />
       </div>
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">E-mail confirmado!</h1>
+        <h1 className="text-[1.875rem] leading-tight font-bold tracking-tight">E-mail confirmado!</h1>
         <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
           Sua conta está ativa. Agora é só acessar o painel e começar a cadastrar sua propriedade.
         </p>
