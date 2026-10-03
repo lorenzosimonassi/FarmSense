@@ -79,15 +79,15 @@ export const RECENT_WEIGHINGS = [
 ]
 
 export const UPCOMING_ACTIVITIES = [
-  { title: "Reforço de aftosa — Lote B", date: "28 set", kind: "sanidade", detail: "12 animais" },
-  { title: "Pesagem mensal — Lote A", date: "01 out", kind: "pesagem", detail: "84 animais" },
-  { title: "Colheita da soja — Talhão 3", date: "13 out", kind: "colheita", detail: "18 ha" },
+  { title: "Reforço de aftosa, Lote B", date: "28 set", kind: "sanidade", detail: "12 animais" },
+  { title: "Pesagem mensal, Lote A", date: "01 out", kind: "pesagem", detail: "84 animais" },
+  { title: "Colheita da soja, Talhão 3", date: "13 out", kind: "colheita", detail: "18 ha" },
   { title: "Plantio do milho safrinha", date: "20 out", kind: "plantio", detail: "Talhões 4 e 5" },
 ] as const
 
 export const NOTIFICATIONS = [
   { id: 1, title: "Vacinação próxima do vencimento", detail: "12 animais do Lote B até 28/09", time: "há 2 h", tone: "warning", unread: true },
   { id: 2, title: "3 animais abaixo do ganho esperado", detail: "Revise o manejo alimentar do Lote C", time: "há 5 h", tone: "critical", unread: true },
-  { id: 3, title: "Colheita prevista em 18 dias", detail: "Talhão 3 — soja em maturação", time: "ontem", tone: "good", unread: true },
+  { id: 3, title: "Colheita prevista em 18 dias", detail: "Talhão 3, soja em maturação", time: "ontem", tone: "good", unread: true },
   { id: 4, title: "Pesagem do Lote A registrada", detail: "84 animais, média de 412 kg", time: "2 dias", tone: "good", unread: false },
 ] as const

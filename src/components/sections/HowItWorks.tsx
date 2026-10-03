@@ -1,74 +1,36 @@
-import { ClipboardList, Database, BarChart3, Lightbulb } from "lucide-react"
-
-import { Reveal, RevealGroup, RevealItem } from "@/components/shared/Reveal"
-
+// Os 4 passos são uma sequência real, por isso a numeração
 const STEPS = [
-  {
-    number: "01",
-    icon: ClipboardList,
-    title: "Cadastre sua propriedade",
-    description: "Informe os dados básicos da propriedade para começar.",
-  },
-  {
-    number: "02",
-    icon: Database,
-    title: "Organize seus dados",
-    description:
-      "Cadastre animais, talhões, culturas, pesagens e vacinações.",
-  },
-  {
-    number: "03",
-    icon: BarChart3,
-    title: "Acompanhe os indicadores",
-    description:
-      "Visualize os principais dados da propriedade em dashboards.",
-  },
-  {
-    number: "04",
-    icon: Lightbulb,
-    title: "Tome decisões melhores",
-    description:
-      "Use as informações organizadas para planejar suas atividades.",
-  },
+  { title: "Cadastre a propriedade", description: "Nome, município e área. Leva um minuto." },
+  { title: "Registre o dia a dia", description: "Animais, pesagens, vacinas, talhões e plantios." },
+  { title: "Acompanhe os indicadores", description: "O painel junta tudo e mostra o que mudou." },
+  { title: "Decida com segurança", description: "Planeje manejo, vacinação e safra com dados na mão." },
 ]
 
 export function HowItWorks() {
   return (
     <section id="como-funciona" className="section-y">
       <div className="container-page">
-        <Reveal className="mx-auto max-w-2xl text-center">
-          <h2 className="text-heading font-extrabold tracking-tight text-foreground">
-            Comece a organizar sua propriedade em poucos passos.
-          </h2>
-        </Reveal>
+        <h2 className="max-w-2xl text-heading font-bold tracking-tight">Como funciona</h2>
 
-        <div className="relative mx-auto mt-12 max-w-xl sm:mt-16 lg:max-w-none">
-          <div className="pointer-events-none absolute top-8 bottom-8 left-8 w-px bg-border lg:hidden" />
-          <div className="pointer-events-none absolute top-8 left-[12.5%] right-[12.5%] hidden h-px bg-border lg:block" />
+        <ol className="relative mt-12 grid gap-10 lg:mt-16 lg:grid-cols-4 lg:gap-8">
+          {/* Linha do tempo: vertical no celular, horizontal a partir de lg */}
+          <span aria-hidden className="absolute top-2 bottom-2 left-[1.1875rem] w-px bg-border lg:hidden" />
+          <span aria-hidden className="absolute top-5 right-0 left-5 hidden h-px bg-border lg:block" />
 
-          <RevealGroup className="grid gap-8 sm:gap-10 lg:grid-cols-4 lg:gap-6">
-            {STEPS.map((s) => (
-              <RevealItem key={s.number}>
-                <div className="relative flex items-start gap-5 lg:flex-col lg:items-center lg:gap-4 lg:text-center">
-                  <div className="relative z-10 flex size-16 shrink-0 items-center justify-center rounded-2xl border border-border bg-card shadow-sm">
-                    <s.icon className="size-6 text-primary" strokeWidth={1.8} />
-                    <span className="absolute -right-2 -top-2 flex size-6 items-center justify-center rounded-full bg-secondary text-[10px] font-bold text-secondary-foreground">
-                      {s.number}
-                    </span>
-                  </div>
-                  <div className="pt-2 lg:pt-0">
-                    <h3 className="text-base font-semibold text-foreground">
-                      {s.title}
-                    </h3>
-                    <p className="mt-2 text-sm leading-relaxed text-muted-foreground lg:max-w-[220px]">
-                      {s.description}
-                    </p>
-                  </div>
-                </div>
-              </RevealItem>
-            ))}
-          </RevealGroup>
-        </div>
+          {STEPS.map((step, i) => (
+            <li key={step.title} className="relative flex gap-5 lg:flex-col lg:gap-6">
+              <span className="relative flex size-10 shrink-0 items-center justify-center rounded-full bg-primary font-display text-base font-bold text-primary-foreground tabular-nums">
+                {i + 1}
+              </span>
+              <div className="pt-1.5 lg:pt-0">
+                <h3 className="text-lg font-semibold tracking-tight">{step.title}</h3>
+                <p className="mt-1.5 max-w-[30ch] text-[15px] leading-relaxed text-muted-foreground">
+                  {step.description}
+                </p>
+              </div>
+            </li>
+          ))}
+        </ol>
       </div>
     </section>
   )

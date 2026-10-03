@@ -1,8 +1,9 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
+import { useMotionValueEvent, useScroll } from "framer-motion"
 import { Menu } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -28,21 +29,21 @@ const NAV_LINKS = [
 
 export function Header() {
   const [scrolled, setScrolled] = useState(false)
+  const { scrollY } = useScroll()
 
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 12)
-    onScroll()
-    window.addEventListener("scroll", onScroll, { passive: true })
-    return () => window.removeEventListener("scroll", onScroll)
-  }, [])
+  // Só re-renderiza quando cruza o limite, não a cada quadro de rolagem
+  useMotionValueEvent(scrollY, "change", (y) => {
+    const next = y > 12
+    if (next !== scrolled) setScrolled(next)
+  })
 
   return (
     <header
       className={cn(
         "fixed inset-x-0 top-0 z-50 pt-[env(safe-area-inset-top)] transition-all duration-300",
         scrolled
-          ? "border-b border-border/60 bg-white/70 shadow-sm backdrop-blur-lg"
-          : "border-b border-transparent bg-white"
+          ? "border-b border-border bg-background/85 backdrop-blur-lg"
+          : "border-b border-transparent bg-background"
       )}
     >
       <div className="container-page flex h-(--header-h) items-center justify-between gap-4">

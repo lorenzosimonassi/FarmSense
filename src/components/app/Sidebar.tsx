@@ -19,7 +19,7 @@ export function Sidebar({ collapsed = false, onNavigate }: SidebarProps) {
   return (
     <div className="flex h-full flex-col bg-sidebar text-sidebar-foreground">
       <div className={cn("flex h-16 shrink-0 items-center", collapsed ? "justify-center px-3" : "px-5")}>
-        <Link href="/painel" onClick={onNavigate} className="flex items-center" aria-label="FarmSense — Visão geral">
+        <Link href="/painel" onClick={onNavigate} className="flex items-center" aria-label="FarmSense, visão geral">
           {collapsed ? (
             <Image src="/logo/farmsense-icon-white.png" alt="" width={102} height={120} className="h-8 w-auto" />
           ) : (

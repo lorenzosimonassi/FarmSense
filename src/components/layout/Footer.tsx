@@ -6,11 +6,11 @@ const farmsenseLogoWhite = "/logo/farmsense-logo-white.png"
 
 const FOOTER_LINKS = [
   { label: "Início", href: "#inicio" },
-  { label: "Recursos", href: "#recursos" },
-  { label: "Como funciona", href: "#como-funciona" },
+  { label: "Funcionalidades", href: "#recursos" },
   { label: "Dashboard", href: "#dashboard" },
-  { label: "Contato", href: "#contato" },
-  { label: "Privacidade", href: "#privacidade" },
+  { label: "Como funciona", href: "#como-funciona" },
+  { label: "Benefícios", href: "#beneficios" },
+  { label: "Entrar", href: "/login" },
 ]
 
 export function Footer() {
