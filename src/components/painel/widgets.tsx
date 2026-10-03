@@ -30,11 +30,10 @@ const WEATHER_ICON = { sun: Sun, rain: CloudRain, cloud: Cloud }
 export function WeatherCard() {
   return (
     <section className="@container relative flex min-w-0 flex-col gap-5 overflow-hidden rounded-2xl bg-primary p-5 text-primary-foreground shadow-xs">
-      <div aria-hidden className="absolute -top-16 -right-16 size-48 rounded-full bg-secondary/50 blur-2xl" />
 
       <div className="relative flex items-start justify-between gap-3">
         <div>
-          <h2 className="text-[15px] font-semibold">Clima na propriedade</h2>
+          <h2 className="text-base font-semibold tracking-tight">Clima na propriedade</h2>
           <p className="mt-0.5 text-xs text-primary-foreground/60">{FARM.city}</p>
         </div>
         <CloudSun className="size-10 text-primary-foreground/90" strokeWidth={1.5} />
@@ -120,7 +119,7 @@ export function VaccinationStatus() {
           })}
         </ul>
 
-        <p className="mt-auto rounded-xl bg-status-critical/8 px-3 py-2.5 text-xs leading-relaxed text-foreground">
+        <p className="mt-auto rounded-lg bg-status-critical/8 px-3 py-2.5 text-xs leading-relaxed text-foreground">
           <strong className="font-semibold">22 animais</strong> estão com vacinas atrasadas. Priorize o reforço do Lote B.
         </p>
       </div>
@@ -145,6 +144,7 @@ function Delta({ value }: { value: number }) {
 export function RecentWeighings() {
   return (
     <Panel
+      variant="plain"
       title="Últimas pesagens"
       description="Ganho em relação à pesagem anterior"
       action={
@@ -209,7 +209,7 @@ const ACTIVITY_ICON = { sanidade: Syringe, pesagem: Scale, colheita: Wheat, plan
 
 export function UpcomingActivities() {
   return (
-    <Panel title="Próximas atividades" description="Agenda dos próximos 30 dias">
+    <Panel variant="plain" title="Próximas atividades" description="Agenda dos próximos 30 dias">
       <ol className="relative flex flex-col gap-4">
         <span aria-hidden className="absolute top-2 bottom-2 left-[1.1875rem] w-px bg-border" />
         {UPCOMING_ACTIVITIES.map((activity) => {

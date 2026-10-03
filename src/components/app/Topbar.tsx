@@ -83,7 +83,7 @@ export function Topbar({ user, collapsed, onToggleCollapsed, onOpenMobileNav }: 
           <input
             type="search"
             placeholder="Buscar animal, talhão..."
-            className="h-10 w-full rounded-full border border-border bg-card pr-4 pl-10 text-sm outline-none placeholder:text-muted-foreground/70 focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/20"
+            className="h-10 w-full rounded-lg border border-input bg-card pr-4 pl-10 text-sm outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/20"
           />
         </label>
 
@@ -124,7 +124,7 @@ function Notifications() {
           {NOTIFICATIONS.map((n) => {
             const tone = TONES[n.tone]
             return (
-              <li key={n.id} className="flex gap-3 rounded-xl p-2.5 hover:bg-accent/60">
+              <li key={n.id} className="flex gap-3 rounded-lg p-2.5 hover:bg-accent/60">
                 <span className={cn("flex size-8 shrink-0 items-center justify-center rounded-full", tone.className)}>
                   <tone.icon className="size-4" />
                 </span>

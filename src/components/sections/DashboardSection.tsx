@@ -1,7 +1,7 @@
 import { Beef, Scale, Syringe, Wheat } from "lucide-react"
 
 import { WeightChart, WeightTable } from "@/components/painel/charts"
-import { KpiCard } from "@/components/painel/KpiCard"
+import { Kpi, KpiStrip } from "@/components/painel/Kpi"
 import { Panel } from "@/components/painel/Panel"
 import { VaccinationStatus } from "@/components/painel/widgets"
 import { Reveal } from "@/components/shared/Reveal"
@@ -29,11 +29,11 @@ export function DashboardSection() {
             </div>
 
             <div className="flex flex-col gap-3 sm:gap-4">
-              <div className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
+              <KpiStrip>
                 {KPIS.map(({ id, ...kpi }) => (
-                  <KpiCard key={id} icon={KPI_ICONS[id]} {...kpi} />
+                  <Kpi key={id} icon={KPI_ICONS[id]} {...kpi} />
                 ))}
-              </div>
+              </KpiStrip>
               <div className="grid gap-3 sm:gap-4 xl:grid-cols-12">
                 <Panel
                   className="xl:col-span-8"

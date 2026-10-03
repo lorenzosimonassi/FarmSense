@@ -11,18 +11,26 @@ type PanelProps = {
   action?: React.ReactNode
   // Quando informado, o card ganha o botão "ver como tabela" (os dados do gráfico sem depender de cor/hover)
   table?: React.ReactNode
+  // "plain": sem caixa, direto no fundo (listas); "card": gráficos e blocos com elevação
+  variant?: "card" | "plain"
   className?: string
   children: React.ReactNode
 }
 
-export function Panel({ title, description, action, table, className, children }: PanelProps) {
+export function Panel({ title, description, action, table, variant = "card", className, children }: PanelProps) {
   const [showTable, setShowTable] = useState(false)
 
   return (
-    <section className={cn("@container flex min-w-0 flex-col rounded-2xl border border-border bg-card p-4 shadow-xs @sm:p-5", className)}>
+    <section
+      className={cn(
+        "@container flex min-w-0 flex-col",
+        variant === "card" ? "rounded-2xl border border-border bg-card p-4 shadow-xs @sm:p-5" : "py-1",
+        className
+      )}
+    >
       <header className="mb-4 flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <h2 className="text-[15px] leading-tight font-semibold">{title}</h2>
+          <h2 className="text-base leading-tight font-semibold tracking-tight">{title}</h2>
           {description && <p className="mt-1 text-xs text-muted-foreground">{description}</p>}
         </div>
         <div className="flex shrink-0 items-center gap-2">

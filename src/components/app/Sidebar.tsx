@@ -41,7 +41,7 @@ export function Sidebar({ collapsed = false, onNavigate }: SidebarProps) {
             {collapsed ? (
               <span aria-hidden className="mx-auto mb-1 h-px w-6 bg-sidebar-border first:hidden" />
             ) : (
-              <span className="px-3 pb-1 text-[11px] font-semibold tracking-wider text-sidebar-foreground/45 uppercase">
+              <span className="px-3 pb-1 text-xs font-medium text-sidebar-foreground/55">
                 {group.label}
               </span>
             )}
@@ -91,7 +91,7 @@ function SidebarLink({
       aria-current={active ? "page" : undefined}
       aria-label={collapsed ? item.label : undefined}
       className={cn(
-        "group relative flex h-10 items-center gap-3 rounded-xl text-sm font-medium transition-colors outline-none pointer-coarse:h-11 focus-visible:ring-2 focus-visible:ring-sidebar-foreground/40",
+        "group relative flex h-10 items-center gap-3 rounded-lg text-sm font-medium transition-colors outline-none pointer-coarse:h-11 focus-visible:ring-2 focus-visible:ring-sidebar-foreground/40",
         collapsed ? "justify-center" : "px-3",
         active
           ? "bg-sidebar-accent text-sidebar-foreground"

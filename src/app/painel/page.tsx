@@ -4,8 +4,9 @@ import { headers } from "next/headers"
 import { Beef, Plus, Scale, Syringe, Wheat } from "lucide-react"
 
 import { CropsChart, CropsTable, RainfallChart, RainfallTable, WeightChart, WeightTable } from "@/components/painel/charts"
-import { KpiCard } from "@/components/painel/KpiCard"
+import { Kpi, KpiStrip } from "@/components/painel/Kpi"
 import { Panel } from "@/components/painel/Panel"
+import { PageHeader } from "@/components/painel/states"
 import { RecentWeighings, UpcomingActivities, VaccinationStatus, WeatherCard } from "@/components/painel/widgets"
 import { Button } from "@/components/ui/button"
 import { auth } from "@/lib/auth"
@@ -25,37 +26,37 @@ export default async function DashboardPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div className="min-w-0">
-          <p className="text-sm text-muted-foreground first-letter:uppercase">{today}</p>
-          <h1 className="mt-1 text-[clamp(1.5rem,1.2rem+1.2vw,1.875rem)] font-bold tracking-tight">
-            Olá, {firstName}!
-          </h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Resumo da <strong className="font-semibold text-foreground">{FARM.name}</strong>
-          </p>
-        </div>
-        <div className="grid grid-cols-2 gap-2 sm:flex">
-          <Button asChild variant="secondary" size="sm">
-            <Link href="/painel/pesagens">
-              <Scale />
-              Registrar pesagem
-            </Link>
-          </Button>
-          <Button asChild size="sm">
-            <Link href="/painel/rebanho">
-              <Plus />
-              Novo animal
-            </Link>
-          </Button>
-        </div>
-      </div>
+      <PageHeader
+        title={`Olá, ${firstName}!`}
+        description={
+          <>
+            <span className="inline-block first-letter:uppercase">{today}</span>. Resumo da{" "}
+            <strong className="font-semibold text-foreground">{FARM.name}</strong>
+          </>
+        }
+        actions={
+          <>
+            <Button asChild variant="secondary" size="sm">
+              <Link href="/painel/pesagens">
+                <Scale />
+                Registrar pesagem
+              </Link>
+            </Button>
+            <Button asChild size="sm">
+              <Link href="/painel/rebanho">
+                <Plus />
+                Novo animal
+              </Link>
+            </Button>
+          </>
+        }
+      />
 
-      <section aria-label="Indicadores principais" className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
+      <KpiStrip>
         {KPIS.map(({ id, ...kpi }) => (
-          <KpiCard key={id} icon={KPI_ICONS[id]} {...kpi} />
+          <Kpi key={id} icon={KPI_ICONS[id]} {...kpi} />
         ))}
-      </section>
+      </KpiStrip>
 
       <div className="grid gap-4 xl:grid-cols-12">
         <Panel
