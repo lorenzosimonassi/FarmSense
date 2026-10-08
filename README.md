@@ -91,7 +91,7 @@ public/
 
 ## Contexto acadêmico
 
-Trabalho de Conclusão de Curso I apresentado ao curso de Ciência da Computação da Universidade Vila Velha (UVV), como parte dos requisitos para obtenção do grau de Bacharel. A implementação e validação completas do sistema estão previstas para o TCC II.
+Trabalho de Conclusão de Curso II apresentado ao curso de Ciência da Computação da Universidade Vila Velha (UVV), como parte dos requisitos para obtenção do grau de Bacharel. Contempla a implementação e a validação do sistema, dando continuidade à proposta apresentada no TCC I.
 
 ---
 
