@@ -93,7 +93,7 @@ User 1──1 Propriedade 1──N Animal 1──N Pesagem
 
 | Modelo | Campos | Restrições |
 |---|---|---|
-| **Propriedade** | `id`, `userId`, `nome`, `municipio`, `uf`, `areaTotalHa?` (Decimal 10,2), `createdAt`, `updatedAt` | `userId` único |
+| **Propriedade** | `id`, `userId`, `nome`, `municipio`, `uf`, `areaTotalHa?` (Decimal 10,2), `atividades` (`PECUARIA`/`AGRICULTURA`, ao menos 1), `tipoRebanho?` (`CORTE`/`LEITE`/`MISTO`), `createdAt`, `updatedAt` | `userId` único; `tipoRebanho` obrigatório com `PECUARIA` e nulo sem ela. Detalhes em [`2026-10-08-cadastro-em-etapas-design.md`](2026-10-08-cadastro-em-etapas-design.md) |
 | **Animal** | `id`, `propriedadeId`, `identificacao`, `nome?`, `sexo` (`MACHO`/`FEMEA`), `raca?`, `dataNascimento?`, `lote?`, `situacao` (`ATIVO`/`VENDIDO`/`MORTO`, padrão `ATIVO`), `dataSaida?`, `observacoes?`, `createdAt`, `updatedAt` | único (`propriedadeId`, `identificacao`); índice (`propriedadeId`, `situacao`) |
 | **Pesagem** | `id`, `animalId`, `data`, `pesoKg` (Decimal 7,2), `observacao?`, `createdAt` | único (`animalId`, `data`) |
 | **AplicacaoSanitaria** | `id`, `animalId`, `tipo` (`VACINA`/`VERMIFUGO`/`MEDICAMENTO`/`OUTRO`), `produto`, `dose?`, `dataAplicacao`, `proximaDose?`, `observacao?`, `createdAt` | índice (`animalId`, `produto`); índice (`proximaDose`) |
@@ -202,7 +202,7 @@ Substituem a rota genérica `/painel/[secao]`, que é removida quando todas as s
 
 | Tela | Rota | Conteúdo |
 |---|---|---|
-| Primeiro acesso | `/painel/primeiro-acesso` | Formulário da propriedade; destino do redirect em 409 `PROPERTY_REQUIRED` |
+| Primeiro acesso | `/primeiro-acesso` (grupo `(auth)`) | Formulário da propriedade para quem não tem fazenda (ex.: entrou pelo Google); destino do redirect do `painel/layout.tsx` e do 409 `PROPERTY_REQUIRED`. Quem se cadastra por e-mail já cria a fazenda no cadastro |
 | Visão geral | `/painel` | Widgets da seção 4.5 com dados reais |
 | Rebanho | `/painel/rebanho` | Tabela com busca e filtros; "Novo animal" em `Sheet` |
 | Detalhe do animal | `/painel/rebanho/[id]` | Dados, gráfico de peso, histórico de pesagens e aplicações, "Registrar saída", editar, excluir |
@@ -213,6 +213,8 @@ Substituem a rota genérica `/painel/[secao]`, que é removida quando todas as s
 | Calendário | `/painel/calendario` | Grade mensal com eventos coloridos por tipo; lista no celular |
 | Relatórios | `/painel/relatorios` | 4 relatórios: período, tabela, "Exportar CSV", "Imprimir" |
 | Configurações | `/painel/configuracoes` | Editar propriedade |
+
+**Menu:** os grupos Pecuária (Rebanho, Pesagens, Sanidade) e Agricultura (Talhões, Culturas) aparecem só se a fazenda tiver essa atividade. Calendário fica no grupo Gestão, junto de Relatórios.
 
 **Estados em todas as telas:** carregando (skeleton), vazio (explicação + ação para criar o primeiro item), erro (mensagem + "Tentar novamente").
 
@@ -247,8 +249,8 @@ Cada etapa recebe seu próprio plano de implementação, termina com testes pass
 
 **Essencial**
 
-1. **Fundação:** `getContext`, formato de erro, `apiFetch`, provider do TanStack Query, Vitest + banco de teste, Propriedade (API, primeiro acesso, configurações).
-2. **Rebanho:** API e telas de animais, detalhe do animal (sem gráficos de peso ainda).
+1. **Fundação:** `getContext`, formato de erro, Vitest + banco de teste, Propriedade (API, cadastro em etapas, primeiro acesso, configurações) — entregue por [`2026-10-08-cadastro-em-etapas-design.md`](2026-10-08-cadastro-em-etapas-design.md).
+2. **Rebanho:** `apiFetch`, provider do TanStack Query, API e telas de animais, detalhe do animal (sem gráficos de peso ainda).
 3. **Pesagens:** API e registro em lote, GMD, gráfico de peso no detalhe do animal.
 4. **Sanidade:** API e registro em lote, alertas, aba Alertas/Histórico.
 5. **Talhões + Culturas:** API e telas de talhões e plantios.

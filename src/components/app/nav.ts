@@ -11,8 +11,11 @@ import {
   type LucideIcon,
 } from "lucide-react"
 
+import type { Atividade } from "@/shared/schemas/propriedade"
+
 export type NavItem = { label: string; href: string; icon: LucideIcon }
-export type NavGroup = { label: string; items: NavItem[] }
+// Grupos com `atividade` só aparecem para fazendas que têm essa atividade
+export type NavGroup = { label: string; items: NavItem[]; atividade?: Atividade }
 
 export const NAV_GROUPS: NavGroup[] = [
   {
@@ -21,6 +24,7 @@ export const NAV_GROUPS: NavGroup[] = [
   },
   {
     label: "Pecuária",
+    atividade: "PECUARIA",
     items: [
       { label: "Rebanho", href: "/painel/rebanho", icon: Beef },
       { label: "Pesagens", href: "/painel/pesagens", icon: Scale },
@@ -29,17 +33,24 @@ export const NAV_GROUPS: NavGroup[] = [
   },
   {
     label: "Agricultura",
+    atividade: "AGRICULTURA",
     items: [
       { label: "Talhões", href: "/painel/talhoes", icon: MapIcon },
       { label: "Culturas", href: "/painel/culturas", icon: Sprout },
-      { label: "Calendário", href: "/painel/calendario", icon: CalendarDays },
     ],
   },
   {
     label: "Gestão",
-    items: [{ label: "Relatórios", href: "/painel/relatorios", icon: BarChart3 }],
+    items: [
+      { label: "Calendário", href: "/painel/calendario", icon: CalendarDays },
+      { label: "Relatórios", href: "/painel/relatorios", icon: BarChart3 },
+    ],
   },
 ]
+
+export function navGroupsFor(atividades: Atividade[]) {
+  return NAV_GROUPS.filter((group) => !group.atividade || atividades.includes(group.atividade))
+}
 
 export const NAV_FOOTER: NavItem[] = [{ label: "Configurações", href: "/painel/configuracoes", icon: Settings }]
 

@@ -4,16 +4,18 @@ import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 
-import { NAV_FOOTER, NAV_GROUPS, type NavItem } from "@/components/app/nav"
+import { NAV_FOOTER, navGroupsFor, type NavItem } from "@/components/app/nav"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { cn } from "@/lib/utils"
+import type { Atividade } from "@/shared/schemas/propriedade"
 
 type SidebarProps = {
+  atividades: Atividade[]
   collapsed?: boolean
   onNavigate?: () => void
 }
 
-export function Sidebar({ collapsed = false, onNavigate }: SidebarProps) {
+export function Sidebar({ atividades, collapsed = false, onNavigate }: SidebarProps) {
   const pathname = usePathname()
 
   return (
@@ -36,7 +38,7 @@ export function Sidebar({ collapsed = false, onNavigate }: SidebarProps) {
       </div>
 
       <nav aria-label="Menu principal" className="flex flex-1 flex-col gap-5 overflow-x-hidden overflow-y-auto px-3 py-4">
-        {NAV_GROUPS.map((group) => (
+        {navGroupsFor(atividades).map((group) => (
           <div key={group.label} className="flex flex-col gap-1">
             {collapsed ? (
               <span aria-hidden className="mx-auto mb-1 h-px w-6 bg-sidebar-border first:hidden" />

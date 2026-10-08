@@ -1,5 +1,8 @@
+import { Suspense } from "react"
 import Image from "next/image"
 import Link from "next/link"
+
+import { AuthAside, AuthAsideFallback } from "@/components/auth/AuthAside"
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -19,23 +22,9 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} FarmSense</p>
       </main>
 
-      {/* Foto em duotone Mata: mesma linguagem visual da landing */}
-      <aside className="relative hidden overflow-hidden bg-primary lg:sticky lg:top-0 lg:block lg:h-dvh">
-        <Image
-          src="/hero/propriedade-rural.jpeg"
-          alt=""
-          fill
-          priority
-          sizes="55vw"
-          className="object-cover grayscale"
-        />
-        <div aria-hidden className="absolute inset-0 bg-primary mix-blend-color" />
-        <div aria-hidden className="absolute inset-0 bg-primary/35" />
-        <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-primary via-primary/40 to-transparent" />
-        <p className="absolute right-12 bottom-12 left-12 max-w-md font-display text-[clamp(1.75rem,1rem+1.4vw,2.5rem)] leading-[1.1] font-semibold tracking-tight text-balance text-primary-foreground xl:right-16 xl:bottom-16 xl:left-16">
-          Toda a gestão da sua propriedade rural em um só lugar.
-        </p>
-      </aside>
+      <Suspense fallback={<AuthAsideFallback />}>
+        <AuthAside />
+      </Suspense>
     </div>
   )
 }

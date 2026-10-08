@@ -57,14 +57,13 @@ export function Hero() {
             transition={{ duration: 0.9, delay: 0.2, ease: EASE }}
             className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-muted lg:aspect-[5/6]"
           >
-            {/* A metade esquerda do arquivo é um fundo claro: o recorte mostra só as lavouras */}
             <Image
-              src="/hero/fazenda.png"
-              alt="Vista aérea de uma propriedade rural com talhões, estufas e área de pastagem"
+              src="/images/plantio.webp"
+              alt="Propriedade rural com canteiros de morango, estufa, galpão e pastagem ao fundo"
               fill
               priority
               sizes="(min-width: 1024px) 50vw, 100vw"
-              className="origin-right scale-[1.45] object-cover object-right lg:scale-100"
+              className="object-cover object-[30%_50%]"
             />
           </motion.div>
 

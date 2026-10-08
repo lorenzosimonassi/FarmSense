@@ -40,8 +40,8 @@ export function FeaturesSection() {
           <article className="grid overflow-hidden rounded-2xl border border-border bg-card sm:grid-cols-2 lg:col-span-2">
             <div className="relative aspect-[4/3] sm:aspect-auto sm:min-h-72">
               <Image
-                src="/hero/propriedade-rural.jpeg"
-                alt="Gado pastando em uma área de pasto com árvores"
+                src="/images/bois.jpg"
+                alt="Rebanho de gado nelore no pasto, com serras ao fundo"
                 fill
                 sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
                 className="object-cover"
@@ -114,11 +114,11 @@ export function FeaturesSection() {
             </CellText>
             <div className="relative order-1 aspect-[4/3] overflow-hidden sm:order-2 sm:aspect-auto sm:min-h-72">
               <Image
-                src="/hero/fazenda.png"
-                alt="Talhões e estufas vistos de cima"
+                src="/images/trator.avif"
+                alt="Trator trabalhando entre as linhas de uma lavoura, visto de cima"
                 fill
                 sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                className="origin-right scale-[1.6] object-cover object-[100%_75%]"
+                className="object-cover"
               />
             </div>
           </article>

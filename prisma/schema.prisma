@@ -19,6 +19,7 @@ model User {
   updatedAt     DateTime  @updatedAt
   sessions      Session[]
   accounts      Account[]
+  propriedade   Propriedade?
 
   @@map("user")
 }
@@ -68,4 +69,33 @@ model Verification {
 
   @@index([identifier])
   @@map("verification")
+}
+
+// Domínio do FarmSense
+
+enum Atividade {
+  PECUARIA
+  AGRICULTURA
+}
+
+enum TipoRebanho {
+  CORTE
+  LEITE
+  MISTO
+}
+
+model Propriedade {
+  id          String       @id @default(cuid())
+  userId      String       @unique
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  nome        String
+  municipio   String
+  uf          String       @db.Char(2)
+  areaTotalHa Decimal?     @db.Decimal(10, 2)
+  atividades  Atividade[]
+  tipoRebanho TipoRebanho?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  @@map("propriedade")
 }

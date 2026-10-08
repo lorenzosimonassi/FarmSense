@@ -8,9 +8,11 @@ type FormFieldProps = React.ComponentProps<"input"> & {
   // Ajuda abaixo do campo (nunca como placeholder, que some ao digitar)
   hint?: string
   labelAction?: React.ReactNode
+  // Unidade exibida dentro do campo, à direita (ex.: "ha")
+  suffix?: string
 }
 
-export function FormField({ label, name, error, hint, labelAction, ...props }: FormFieldProps) {
+export function FormField({ label, name, error, hint, labelAction, suffix, ...props }: FormFieldProps) {
   const errorId = `${name}-error`
   const hintId = `${name}-hint`
   const describedBy = [hint && hintId, error && errorId].filter(Boolean).join(" ") || undefined
@@ -21,13 +23,24 @@ export function FormField({ label, name, error, hint, labelAction, ...props }: F
         <Label htmlFor={name}>{label}</Label>
         {labelAction}
       </div>
-      <Input
-        id={name}
-        name={name}
-        aria-invalid={Boolean(error)}
-        aria-describedby={describedBy}
-        {...props}
-      />
+      <div className="relative">
+        <Input
+          id={name}
+          name={name}
+          aria-invalid={Boolean(error)}
+          aria-describedby={describedBy}
+          className={suffix ? "pr-11" : undefined}
+          {...props}
+        />
+        {suffix && (
+          <span
+            aria-hidden
+            className="pointer-events-none absolute inset-y-0 right-3.5 flex items-center text-sm text-muted-foreground"
+          >
+            {suffix}
+          </span>
+        )}
+      </div>
       {hint && (
         <p id={hintId} className="text-[13px] text-muted-foreground">
           {hint}

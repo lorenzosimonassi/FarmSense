@@ -8,15 +8,17 @@ import { Topbar, type ShellUser } from "@/components/app/Topbar"
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { cn } from "@/lib/utils"
+import type { Atividade } from "@/shared/schemas/propriedade"
 
 type AppShellProps = {
   user: ShellUser
+  atividades: Atividade[]
   // Lido do cookie no servidor: a sidebar já renderiza no estado certo, sem "piscar"
   defaultCollapsed: boolean
   children: React.ReactNode
 }
 
-export function AppShell({ user, defaultCollapsed, children }: AppShellProps) {
+export function AppShell({ user, atividades, defaultCollapsed, children }: AppShellProps) {
   const [collapsed, setCollapsed] = useState(defaultCollapsed)
   const [mobileOpen, setMobileOpen] = useState(false)
 
@@ -44,7 +46,7 @@ export function AppShell({ user, defaultCollapsed, children }: AppShellProps) {
     <TooltipProvider>
       <div className={cn("min-h-dvh bg-background", collapsed ? "[--sidebar-w:4.5rem]" : "[--sidebar-w:16rem]")}>
         <aside className="fixed inset-y-0 left-0 z-40 hidden w-(--sidebar-w) transition-[width] duration-300 ease-out motion-reduce:transition-none lg:block">
-          <Sidebar collapsed={collapsed} />
+          <Sidebar atividades={atividades} collapsed={collapsed} />
         </aside>
 
         {/* Abaixo de lg a sidebar vira gaveta */}
@@ -54,7 +56,7 @@ export function AppShell({ user, defaultCollapsed, children }: AppShellProps) {
             className="w-72 max-w-[85vw] border-0 bg-sidebar [&>button]:text-sidebar-foreground [&>button]:hover:bg-sidebar-accent"
           >
             <SheetTitle className="sr-only">Menu</SheetTitle>
-            <Sidebar onNavigate={() => setMobileOpen(false)} />
+            <Sidebar atividades={atividades} onNavigate={() => setMobileOpen(false)} />
           </SheetContent>
         </Sheet>
 

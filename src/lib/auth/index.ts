@@ -1,10 +1,22 @@
 import { betterAuth } from "better-auth"
 import { prismaAdapter } from "better-auth/adapters/prisma"
+import { APIError } from "better-auth/api"
 
 import { prisma } from "@/lib/db"
 import { sendEmail } from "@/lib/email"
 import { resetPasswordTemplate, verifyEmailTemplate } from "@/lib/email/templates"
 import { redis } from "@/lib/redis"
+import { criar as criarPropriedade } from "@/server/services/propriedade"
+import { propriedadeSchema } from "@/shared/schemas/propriedade"
+
+const SIGN_UP_EMAIL_PATH = "/sign-up/email"
+
+// O cadastro por e-mail envia a fazenda junto, em `propriedade` (campo ignorado pelo Better Auth)
+function propriedadeDoCadastro(context: { path?: string; body?: unknown } | null) {
+  if (context?.path !== SIGN_UP_EMAIL_PATH) return null
+  const body = context.body as { propriedade?: unknown } | undefined
+  return propriedadeSchema.safeParse(body?.propriedade)
+}
 
 // Incrementa o contador e define o TTL apenas na criação (janela fixa de rate limit)
 const INCREMENT_WITH_TTL = `
@@ -76,6 +88,33 @@ export const auth = betterAuth({
     expiresIn: 60 * 60,
     sendVerificationEmail: async ({ user, url }) => {
       deliverAuthEmail(user.email, url, verifyEmailTemplate({ name: user.name, url }))
+    },
+  },
+
+  databaseHooks: {
+    user: {
+      create: {
+        // Fazenda inválida impede a criação do usuário
+        before: async (_user, context) => {
+          const result = propriedadeDoCadastro(context)
+          if (result && !result.success) {
+            throw new APIError("BAD_REQUEST", {
+              code: "PROPRIEDADE_INVALIDA",
+              message: "Confira os dados da fazenda.",
+            })
+          }
+        },
+        // Se falhar aqui, a conta fica sem fazenda e o primeiro login leva a /primeiro-acesso
+        after: async (user, context) => {
+          const result = propriedadeDoCadastro(context)
+          if (!result?.success) return
+          try {
+            await criarPropriedade(user.id, result.data)
+          } catch (error) {
+            console.error(`[auth] Falha ao criar a fazenda do usuário ${user.id}`, error)
+          }
+        },
+      },
     },
   },
 
