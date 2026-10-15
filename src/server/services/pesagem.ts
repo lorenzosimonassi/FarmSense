@@ -1,6 +1,7 @@
 import { Prisma } from "@/generated/prisma/client"
 import { prisma } from "@/lib/db"
 import { HttpError } from "@/server/http/responses"
+import { foraDoRebanhoEm, noRebanhoEm } from "@/server/services/rebanho"
 import { paraDate, paraISO } from "@/shared/datas"
 import { gmd, resumoDesempenho } from "@/shared/desempenho"
 import type {
@@ -11,19 +12,6 @@ import type {
   PesagemData,
   PesagemLoteData,
 } from "@/shared/schemas/pesagem"
-
-type AnimalDatas = { dataNascimento: Date | null; situacao: string; dataSaida: Date | null }
-
-// O animal precisa existir no rebanho na data da pesagem
-function conflitoComAnimal(animal: AnimalDatas, data: string) {
-  if (animal.dataNascimento && data < paraISO(animal.dataNascimento)) {
-    return "A data é anterior ao nascimento do animal."
-  }
-  if (animal.situacao !== "ATIVO" && animal.dataSaida && data > paraISO(animal.dataSaida)) {
-    return "O animal já tinha saído do rebanho nessa data."
-  }
-  return null
-}
 
 const JA_PESADO = "Este animal já tem pesagem nessa data."
 
@@ -58,7 +46,7 @@ export async function registrarLote(propriedadeId: string, { data, itens }: Pesa
       ? "Animal não encontrado no rebanho."
       : jaPesados.has(item.animalId)
         ? JA_PESADO
-        : conflitoComAnimal(animal, data)
+        : foraDoRebanhoEm(animal, data)
     if (erro) fields[`itens.${i}.pesoKg`] = erro
   })
   if (Object.keys(fields).length > 0) {
@@ -103,7 +91,7 @@ async function buscarDaPropriedade(propriedadeId: string, id: string) {
 
 export async function atualizar(propriedadeId: string, id: string, data: PesagemData) {
   const pesagem = await buscarDaPropriedade(propriedadeId, id)
-  const conflito = conflitoComAnimal(pesagem.animal, data.data)
+  const conflito = foraDoRebanhoEm(pesagem.animal, data.data)
   if (conflito) throw new HttpError(400, "VALIDATION_ERROR", conflito, { data: conflito })
 
   await conflitoDeData(() =>
@@ -189,12 +177,7 @@ export async function listar(propriedadeId: string, filtros: FiltrosPesagens): P
 export async function planilha(propriedadeId: string, data: string, lote?: string): Promise<LinhaPlanilha[]> {
   const dia = paraDate(data)
   const animais = await prisma.animal.findMany({
-    where: {
-      propriedadeId,
-      lote,
-      OR: [{ dataNascimento: null }, { dataNascimento: { lte: dia } }],
-      AND: [{ OR: [{ situacao: "ATIVO" }, { dataSaida: { gte: dia } }] }],
-    },
+    where: { ...noRebanhoEm(propriedadeId, dia), lote },
     select: { id: true, identificacao: true, nome: true, lote: true },
     orderBy: [{ lote: { sort: "asc", nulls: "last" } }, { identificacao: "asc" }],
   })

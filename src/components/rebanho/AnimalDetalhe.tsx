@@ -3,10 +3,11 @@
 import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { ArrowLeft, Loader2, LogOut, Pencil, RotateCcw, Syringe, Trash2 } from "lucide-react"
+import { ArrowLeft, Loader2, LogOut, Pencil, RotateCcw, Trash2 } from "lucide-react"
 
 import { FormAlert } from "@/components/auth/FormAlert"
 import { PesagensDoAnimal } from "@/components/pesagens/PesagensDoAnimal"
+import { SanidadeDoAnimal } from "@/components/sanidade/SanidadeDoAnimal"
 import { AnimalForm } from "@/components/rebanho/AnimalForm"
 import { SaidaForm } from "@/components/rebanho/SaidaForm"
 import { FormSheet, SituacaoBadge } from "@/components/rebanho/ui"
@@ -114,14 +115,9 @@ export function AnimalDetalhe({ inicial }: { inicial: Animal }) {
           </dl>
         </section>
 
-        {/* Sanidade ganha dados na próxima etapa; o espaço já mostra o que vai existir */}
         <div className="flex flex-col gap-4 lg:col-span-7">
           <PesagensDoAnimal animalId={animal.id} identificacao={animal.identificacao} />
-          <Historico
-            icon={Syringe}
-            titulo="Sanidade"
-            texto="Vacinas e medicamentos aplicados, com a data da próxima dose de cada um."
-          />
+          <SanidadeDoAnimal animalId={animal.id} identificacao={animal.identificacao} ativo={ativo} />
         </div>
       </div>
 
@@ -150,20 +146,6 @@ function Dado({ label, valor, detalhe }: { label: string; valor: string | null; 
         {detalhe && <span className="block text-xs font-normal text-muted-foreground">{detalhe}</span>}
       </dd>
     </div>
-  )
-}
-
-function Historico({ icon: Icon, titulo, texto }: { icon: typeof Syringe; titulo: string; texto: string }) {
-  return (
-    <section className="flex items-start gap-4 rounded-2xl border border-dashed border-input p-5">
-      <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-accent text-primary">
-        <Icon className="size-4.5" />
-      </span>
-      <div>
-        <h2 className="text-base font-semibold tracking-tight">{titulo}</h2>
-        <p className="mt-1 text-sm text-muted-foreground">{texto}</p>
-      </div>
-    </section>
   )
 }
 

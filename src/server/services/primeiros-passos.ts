@@ -1,4 +1,5 @@
 import { contar as contarAnimais } from "@/server/services/animal"
+import { contar as contarAplicacoes } from "@/server/services/aplicacao"
 import { contar as contarPesagens } from "@/server/services/pesagem"
 import type { Propriedade } from "@/server/services/propriedade"
 import type { Atividade } from "@/shared/schemas/propriedade"
@@ -17,9 +18,13 @@ export type Passo = {
 
 // O que já foi feito vem sempre dos dados (não de uma flag salva): a lista se marca sozinha e nunca fica desatualizada
 export async function listarPassos(propriedade: Propriedade): Promise<Passo[]> {
-  const [animais, pesagens] = await Promise.all([contarAnimais(propriedade.id), contarPesagens(propriedade.id)])
-  // TODO: trocar os zeros pelos counts reais conforme sanidade e agricultura ganharem tabelas
-  const contagem = { animais, pesagens, vacinas: 0, talhoes: 0, safras: 0 }
+  const [animais, pesagens, vacinas] = await Promise.all([
+    contarAnimais(propriedade.id),
+    contarPesagens(propriedade.id),
+    contarAplicacoes(propriedade.id),
+  ])
+  // TODO: trocar os zeros pelos counts reais quando a agricultura ganhar tabelas
+  const contagem = { animais, pesagens, vacinas, talhoes: 0, safras: 0 }
 
   const passos: Passo[] = [
     {
@@ -43,10 +48,10 @@ export async function listarPassos(propriedade: Propriedade): Promise<Passo[]> {
     {
       id: "vacinas",
       atividade: "PECUARIA",
-      titulo: "Monte o calendário de vacinas",
-      descricao: "Avisamos antes de cada reforço vencer, para nenhum animal ficar com a vacina atrasada.",
-      href: "/painel/sanidade",
-      acao: "Lançar vacinas",
+      titulo: "Registre as vacinas do rebanho",
+      descricao: "Com a data do próximo reforço, avisamos antes de vencer, para nenhum animal ficar com a vacina atrasada.",
+      href: "/painel/sanidade/registrar",
+      acao: "Registrar vacinas",
       concluido: contagem.vacinas > 0,
     },
     {

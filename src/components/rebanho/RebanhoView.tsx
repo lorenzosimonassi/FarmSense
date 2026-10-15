@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { ArrowRight, Beef, PartyPopper, Plus, Search, SearchX } from "lucide-react"
@@ -12,21 +12,13 @@ import { Paginacao } from "@/components/painel/Paginacao"
 import { EmptyState, ErrorState, PageHeader, PanelSkeleton } from "@/components/painel/states"
 import { Button } from "@/components/ui/button"
 import { useAnimais, useLotes } from "@/lib/api/hooks/animais"
+import { useDebounced } from "@/lib/use-debounced"
 import { cn } from "@/lib/utils"
 import { formatarData, idade } from "@/shared/datas"
 import { formatarKg } from "@/shared/numeros"
 import { SEXO_LABEL, SEXOS, SITUACOES, type AnimalNaLista, type Sexo, type SituacaoAnimal } from "@/shared/schemas/animal"
 
 const PAGE_SIZE = 20
-
-function useDebounced<T>(value: T, delay = 300) {
-  const [debounced, setDebounced] = useState(value)
-  useEffect(() => {
-    const timer = setTimeout(() => setDebounced(value), delay)
-    return () => clearTimeout(timer)
-  }, [value, delay])
-  return debounced
-}
 
 export function RebanhoView({ abrirNovo }: { abrirNovo: boolean }) {
   const router = useRouter()

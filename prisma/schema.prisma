@@ -129,6 +129,7 @@ model Animal {
   createdAt      DateTime       @default(now())
   updatedAt      DateTime       @updatedAt
   pesagens       Pesagem[]
+  aplicacoes     AplicacaoSanitaria[]
 
   @@unique([propriedadeId, identificacao])
   @@index([propriedadeId, situacao])
@@ -148,4 +149,29 @@ model Pesagem {
   @@unique([animalId, data])
   @@index([data])
   @@map("pesagem")
+}
+
+enum TipoAplicacao {
+  VACINA
+  VERMIFUGO
+  MEDICAMENTO
+  OUTRO
+}
+
+model AplicacaoSanitaria {
+  id            String        @id @default(cuid())
+  animalId      String
+  animal        Animal        @relation(fields: [animalId], references: [id], onDelete: Cascade)
+  tipo          TipoAplicacao
+  produto       String
+  dose          String?
+  dataAplicacao DateTime      @db.Date
+  // Informada em cada aplicação; é dela que saem os alertas de reforço
+  proximaDose   DateTime?     @db.Date
+  observacao    String?
+  createdAt     DateTime      @default(now())
+
+  @@index([animalId, produto])
+  @@index([proximaDose])
+  @@map("aplicacao_sanitaria")
 }
