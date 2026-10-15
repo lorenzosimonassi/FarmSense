@@ -1,27 +1,29 @@
 import type { Metadata } from "next"
-import Link from "next/link"
 import { headers } from "next/headers"
-import { Beef, Plus, Scale, Syringe, Wheat } from "lucide-react"
+import { redirect } from "next/navigation"
+import { Suspense } from "react"
 
-import { CropsChart, CropsTable, RainfallChart, RainfallTable, WeightChart, WeightTable } from "@/components/painel/charts"
-import { Kpi, KpiStrip } from "@/components/painel/Kpi"
-import { Panel } from "@/components/painel/Panel"
+import { ClimaFazenda, ClimaSkeleton } from "@/components/painel/clima"
+import { CardFazenda, PrimeirosPassos } from "@/components/painel/inicio"
 import { PageHeader } from "@/components/painel/states"
-import { RecentWeighings, UpcomingActivities, VaccinationStatus, WeatherCard } from "@/components/painel/widgets"
-import { Button } from "@/components/ui/button"
 import { auth } from "@/lib/auth"
-import { FARM, KPIS } from "@/lib/mock/painel"
+import { listarPassos } from "@/server/services/primeiros-passos"
+import { buscarPorUsuario } from "@/server/services/propriedade"
 
 export const metadata: Metadata = {
   title: "Visão geral | FarmSense",
 }
 
-const KPI_ICONS = { animais: <Beef />, peso: <Scale />, area: <Wheat />, vacinas: <Syringe /> }
-
 export default async function DashboardPage() {
-  // A sessão já foi validada no layout; aqui só precisamos do nome
+  // O layout já garante sessão e fazenda; aqui só carregamos os dados
   const session = await auth.api.getSession({ headers: await headers() })
-  const firstName = session?.user.name.split(" ")[0]
+  const propriedade = session && (await buscarPorUsuario(session.user.id))
+  if (!propriedade) redirect("/primeiro-acesso")
+
+  const passos = await listarPassos(propriedade)
+  const configurando = passos.some((passo) => !passo.concluido)
+
+  const firstName = session.user.name.split(" ")[0]
   const today = new Intl.DateTimeFormat("pt-BR", { weekday: "long", day: "numeric", month: "long" }).format(new Date())
 
   return (
@@ -30,66 +32,24 @@ export default async function DashboardPage() {
         title={`Olá, ${firstName}!`}
         description={
           <>
-            <span className="inline-block first-letter:uppercase">{today}</span>. Resumo da{" "}
-            <strong className="font-semibold text-foreground">{FARM.name}</strong>
-          </>
-        }
-        actions={
-          <>
-            <Button asChild variant="secondary" size="sm">
-              <Link href="/painel/pesagens">
-                <Scale />
-                Registrar pesagem
-              </Link>
-            </Button>
-            <Button asChild size="sm">
-              <Link href="/painel/rebanho">
-                <Plus />
-                Novo animal
-              </Link>
-            </Button>
+            <span className="inline-block first-letter:uppercase">{today}</span>.{" "}
+            {configurando ? "Vamos deixar a " : "Resumo da "}
+            <strong className="font-semibold text-foreground">{propriedade.nome}</strong>
+            {configurando && " pronta para acompanhar"}
           </>
         }
       />
 
-      <KpiStrip>
-        {KPIS.map(({ id, ...kpi }) => (
-          <Kpi key={id} icon={KPI_ICONS[id]} {...kpi} />
-        ))}
-      </KpiStrip>
+      <div className="grid items-start gap-4 xl:grid-cols-12">
+        {/* TODO: quando os módulos tiverem dados, os indicadores e gráficos entram aqui, cada um ao atingir o mínimo de registros */}
+        <div className="xl:col-span-8">{configurando && <PrimeirosPassos passos={passos} />}</div>
 
-      <div className="grid gap-4 xl:grid-cols-12">
-        <Panel
-          className="xl:col-span-8"
-          title="Evolução do peso médio"
-          description="Por lote, nos últimos 12 meses"
-          table={<WeightTable />}
-        >
-          <WeightChart />
-        </Panel>
-        <div className="xl:col-span-4 [&>section]:h-full">
-          <WeatherCard />
-        </div>
-      </div>
-
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-        <Panel title="Chuva acumulada" description="Milímetros por mês" table={<RainfallTable />}>
-          <RainfallChart />
-        </Panel>
-        <Panel title="Área por cultura" description="Safra 2026/27" table={<CropsTable />}>
-          <CropsChart />
-        </Panel>
-        <div className="md:col-span-2 xl:col-span-1 [&>section]:h-full">
-          <VaccinationStatus />
-        </div>
-      </div>
-
-      <div className="grid gap-4 xl:grid-cols-12">
-        <div className="xl:col-span-8 [&>section]:h-full">
-          <RecentWeighings />
-        </div>
-        <div className="xl:col-span-4 [&>section]:h-full">
-          <UpcomingActivities />
+        <div className="flex flex-col gap-4 xl:col-span-4">
+          {/* A previsão vem de uma API externa: o resto da página não espera por ela */}
+          <Suspense fallback={<ClimaSkeleton />}>
+            <ClimaFazenda municipio={propriedade.municipio} uf={propriedade.uf} />
+          </Suspense>
+          <CardFazenda propriedade={propriedade} />
         </div>
       </div>
     </div>

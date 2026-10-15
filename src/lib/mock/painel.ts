@@ -55,20 +55,6 @@ export const VACCINATION_STATUS = [
   { status: "critical", label: "Atrasadas", animals: 22 },
 ] as const
 
-export const WEATHER = {
-  temp: 27,
-  condition: "Parcialmente nublado",
-  humidity: 58,
-  wind: 12,
-  rainChance: 40,
-  forecast: [
-    { day: "Sex", min: 18, max: 29, rain: 20, icon: "sun" },
-    { day: "Sáb", min: 19, max: 28, rain: 60, icon: "rain" },
-    { day: "Dom", min: 17, max: 25, rain: 80, icon: "rain" },
-    { day: "Seg", min: 16, max: 27, rain: 10, icon: "cloud" },
-  ],
-} as const
-
 export const RECENT_WEIGHINGS = [
   { tag: "BR-1042", lot: "Lote A", weight: 438, delta: 12.4, date: "24/09" },
   { tag: "BR-0987", lot: "Lote B", weight: 401, delta: 9.8, date: "24/09" },

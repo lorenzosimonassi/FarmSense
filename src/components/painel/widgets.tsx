@@ -3,80 +3,19 @@ import {
   ArrowUpRight,
   CircleAlert,
   CircleCheck,
-  Cloud,
-  CloudRain,
-  CloudSun,
-  Droplets,
   Scale,
   Sprout,
-  Sun,
   Syringe,
   TriangleAlert,
   Wheat,
-  Wind,
 } from "lucide-react"
 import Link from "next/link"
 
 import { Panel } from "@/components/painel/Panel"
-import { FARM, RECENT_WEIGHINGS, UPCOMING_ACTIVITIES, VACCINATION_STATUS, WEATHER } from "@/lib/mock/painel"
+import { RECENT_WEIGHINGS, UPCOMING_ACTIVITIES, VACCINATION_STATUS } from "@/lib/mock/painel"
 import { cn } from "@/lib/utils"
 
 const number = new Intl.NumberFormat("pt-BR", { maximumFractionDigits: 1 })
-
-/* ---------- Clima ---------- */
-
-const WEATHER_ICON = { sun: Sun, rain: CloudRain, cloud: Cloud }
-
-export function WeatherCard() {
-  return (
-    <section className="@container relative flex min-w-0 flex-col gap-5 overflow-hidden rounded-2xl bg-primary p-5 text-primary-foreground shadow-xs">
-
-      <div className="relative flex items-start justify-between gap-3">
-        <div>
-          <h2 className="text-base font-semibold tracking-tight">Clima na propriedade</h2>
-          <p className="mt-0.5 text-xs text-primary-foreground/60">{FARM.city}</p>
-        </div>
-        <CloudSun className="size-10 text-primary-foreground/90" strokeWidth={1.5} />
-      </div>
-
-      <div className="relative">
-        <p className="text-5xl font-bold tracking-tight">{WEATHER.temp}°</p>
-        <p className="mt-1 text-sm text-primary-foreground/75">{WEATHER.condition}</p>
-      </div>
-
-      <dl className="relative grid grid-cols-3 gap-2 text-xs">
-        {[
-          { icon: Droplets, label: "Umidade", value: `${WEATHER.humidity}%` },
-          { icon: Wind, label: "Vento", value: `${WEATHER.wind} km/h` },
-          { icon: CloudRain, label: "Chuva", value: `${WEATHER.rainChance}%` },
-        ].map((item) => (
-          <div key={item.label} className="flex flex-col gap-1 rounded-xl bg-primary-foreground/8 p-2.5">
-            <dt className="flex items-center gap-1 text-primary-foreground/60">
-              <item.icon className="size-3.5" />
-              {item.label}
-            </dt>
-            <dd className="font-semibold">{item.value}</dd>
-          </div>
-        ))}
-      </dl>
-
-      <ul className="relative grid grid-cols-4 gap-1 border-t border-primary-foreground/10 pt-4 text-center text-xs">
-        {WEATHER.forecast.map((day) => {
-          const Icon = WEATHER_ICON[day.icon]
-          return (
-            <li key={day.day} className="flex flex-col items-center gap-1.5">
-              <span className="text-primary-foreground/60">{day.day}</span>
-              <Icon className="size-4.5" strokeWidth={1.8} />
-              <span className="font-semibold">
-                {day.max}° <span className="font-normal text-primary-foreground/50">{day.min}°</span>
-              </span>
-            </li>
-          )
-        })}
-      </ul>
-    </section>
-  )
-}
 
 /* ---------- Situação sanitária (medidor com status) ---------- */
 
