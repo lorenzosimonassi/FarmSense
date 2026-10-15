@@ -128,8 +128,24 @@ model Animal {
   observacoes    String?
   createdAt      DateTime       @default(now())
   updatedAt      DateTime       @updatedAt
+  pesagens       Pesagem[]
 
   @@unique([propriedadeId, identificacao])
   @@index([propriedadeId, situacao])
   @@map("animal")
+}
+
+model Pesagem {
+  id         String   @id @default(cuid())
+  animalId   String
+  animal     Animal   @relation(fields: [animalId], references: [id], onDelete: Cascade)
+  data       DateTime @db.Date
+  pesoKg     Decimal  @db.Decimal(7, 2)
+  observacao String?
+  createdAt  DateTime @default(now())
+
+  // Uma pesagem por animal por dia; o índice também serve às consultas por data
+  @@unique([animalId, data])
+  @@index([data])
+  @@map("pesagem")
 }

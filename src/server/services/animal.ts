@@ -1,8 +1,9 @@
 import { Prisma, type Animal as AnimalRow } from "@/generated/prisma/client"
 import { prisma } from "@/lib/db"
 import { HttpError } from "@/server/http/responses"
+import { pesosAtuais } from "@/server/services/pesagem"
 import { paraDate, paraISO } from "@/shared/datas"
-import type { Animal, AnimalData, FiltrosAnimais } from "@/shared/schemas/animal"
+import type { Animal, AnimalData, AnimalNaLista, FiltrosAnimais } from "@/shared/schemas/animal"
 
 function toAnimal(row: AnimalRow): Animal {
   return {
@@ -73,7 +74,9 @@ export async function listar(propriedadeId: string, filtros: FiltrosAnimais) {
     prisma.animal.count({ where }),
   ])
 
-  return { items: rows.map(toAnimal), total }
+  const pesos = await pesosAtuais(rows.map((row) => row.id))
+  const items: AnimalNaLista[] = rows.map((row) => ({ ...toAnimal(row), pesoAtual: pesos.get(row.id) ?? null }))
+  return { items, total }
 }
 
 // Animal de outra fazenda responde 404, como se não existisse

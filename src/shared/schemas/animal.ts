@@ -1,6 +1,7 @@
 import * as z from "zod"
 
-import { hojeISO, isDataISO } from "@/shared/datas"
+import { hojeISO } from "@/shared/datas"
+import { dataOpcional, textoOpcional } from "@/shared/schemas/campos"
 
 export const SEXOS = ["MACHO", "FEMEA"] as const
 export const SITUACOES = ["ATIVO", "VENDIDO", "MORTO"] as const
@@ -27,29 +28,8 @@ export type Animal = {
   updatedAt: string
 }
 
-// Campos opcionais do formulário: texto vazio vira null
-function textoOpcional(max: number) {
-  return z.preprocess(
-    (value) => (typeof value === "string" && value.trim() === "" ? null : value),
-    z
-      .string()
-      .trim()
-      .max(max, { error: `Use no máximo ${max} caracteres.` })
-      .nullish()
-      .transform((value) => value ?? null)
-  )
-}
-
-function dataOpcional() {
-  return z.preprocess(
-    (value) => (value === "" ? null : value),
-    z
-      .string()
-      .refine(isDataISO, { error: "Informe uma data válida." })
-      .nullish()
-      .transform((value) => value ?? null)
-  )
-}
+// Na lista do rebanho, o animal já vem com o peso mais recente
+export type AnimalNaLista = Animal & { pesoAtual: { data: string; pesoKg: number } | null }
 
 export const animalSchema = z
   .object({

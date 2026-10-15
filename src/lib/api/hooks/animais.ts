@@ -3,7 +3,7 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
 import { apiFetch } from "@/lib/api/client"
-import type { Animal, AnimalInput, Sexo, SituacaoAnimal } from "@/shared/schemas/animal"
+import type { Animal, AnimalInput, AnimalNaLista, Sexo, SituacaoAnimal } from "@/shared/schemas/animal"
 
 // Valores vazios ("") são descartados pelo apiFetch e significam "sem filtro"
 export type FiltrosAnimaisInput = {
@@ -26,7 +26,7 @@ export const animaisKeys = {
 export function useAnimais(filtros: FiltrosAnimaisInput) {
   return useQuery({
     queryKey: animaisKeys.lista(filtros),
-    queryFn: () => apiFetch<{ items: Animal[]; total: number }>("/animais", { params: filtros }),
+    queryFn: () => apiFetch<{ items: AnimalNaLista[]; total: number }>("/animais", { params: filtros }),
     // Mantém a página anterior na tela enquanto a próxima carrega (sem piscar o skeleton a cada filtro)
     placeholderData: keepPreviousData,
   })

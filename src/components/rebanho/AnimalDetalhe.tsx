@@ -3,9 +3,10 @@
 import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { ArrowLeft, Loader2, LogOut, Pencil, RotateCcw, Scale, Syringe, Trash2 } from "lucide-react"
+import { ArrowLeft, Loader2, LogOut, Pencil, RotateCcw, Syringe, Trash2 } from "lucide-react"
 
 import { FormAlert } from "@/components/auth/FormAlert"
+import { PesagensDoAnimal } from "@/components/pesagens/PesagensDoAnimal"
 import { AnimalForm } from "@/components/rebanho/AnimalForm"
 import { SaidaForm } from "@/components/rebanho/SaidaForm"
 import { FormSheet, SituacaoBadge } from "@/components/rebanho/ui"
@@ -113,13 +114,9 @@ export function AnimalDetalhe({ inicial }: { inicial: Animal }) {
           </dl>
         </section>
 
-        {/* Pesagens e sanidade ganham dados nas próximas etapas; o espaço já mostra o que vai existir */}
+        {/* Sanidade ganha dados na próxima etapa; o espaço já mostra o que vai existir */}
         <div className="flex flex-col gap-4 lg:col-span-7">
-          <Historico
-            icon={Scale}
-            titulo="Pesagens"
-            texto="O peso atual, o histórico e o ganho médio diário deste animal aparecem aqui."
-          />
+          <PesagensDoAnimal animalId={animal.id} identificacao={animal.identificacao} />
           <Historico
             icon={Syringe}
             titulo="Sanidade"
@@ -156,7 +153,7 @@ function Dado({ label, valor, detalhe }: { label: string; valor: string | null; 
   )
 }
 
-function Historico({ icon: Icon, titulo, texto }: { icon: typeof Scale; titulo: string; texto: string }) {
+function Historico({ icon: Icon, titulo, texto }: { icon: typeof Syringe; titulo: string; texto: string }) {
   return (
     <section className="flex items-start gap-4 rounded-2xl border border-dashed border-input p-5">
       <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-accent text-primary">

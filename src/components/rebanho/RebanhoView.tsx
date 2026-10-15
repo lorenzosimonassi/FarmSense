@@ -3,17 +3,19 @@
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { ArrowRight, Beef, ChevronLeft, ChevronRight, PartyPopper, Plus, Search, SearchX } from "lucide-react"
+import { ArrowRight, Beef, PartyPopper, Plus, Search, SearchX } from "lucide-react"
 
 import { AnimalForm } from "@/components/rebanho/AnimalForm"
 import { campoClasse } from "@/components/rebanho/campos"
 import { FormSheet, SituacaoBadge } from "@/components/rebanho/ui"
+import { Paginacao } from "@/components/painel/Paginacao"
 import { EmptyState, ErrorState, PageHeader, PanelSkeleton } from "@/components/painel/states"
 import { Button } from "@/components/ui/button"
 import { useAnimais, useLotes } from "@/lib/api/hooks/animais"
 import { cn } from "@/lib/utils"
 import { formatarData, idade } from "@/shared/datas"
-import { SEXO_LABEL, SEXOS, SITUACOES, type Animal, type Sexo, type SituacaoAnimal } from "@/shared/schemas/animal"
+import { formatarKg } from "@/shared/numeros"
+import { SEXO_LABEL, SEXOS, SITUACOES, type AnimalNaLista, type Sexo, type SituacaoAnimal } from "@/shared/schemas/animal"
 
 const PAGE_SIZE = 20
 
@@ -150,7 +152,7 @@ export function RebanhoView({ abrirNovo }: { abrirNovo: boolean }) {
           ) : (
             <div className={cn("flex flex-col gap-4 transition-opacity", lista.isPlaceholderData && "opacity-60")}>
               <TabelaAnimais animais={lista.data.items} />
-              <Paginacao page={page} total={lista.data.total} onPage={setPage} />
+              <Paginacao page={page} pageSize={PAGE_SIZE} total={lista.data.total} onPage={setPage} />
             </div>
           )}
         </section>
@@ -251,7 +253,7 @@ function Filtros(props: {
 
 /* ---------- Tabela quando cabe, lista em telas estreitas ---------- */
 
-function TabelaAnimais({ animais }: { animais: Animal[] }) {
+function TabelaAnimais({ animais }: { animais: AnimalNaLista[] }) {
   const router = useRouter()
 
   return (
@@ -264,6 +266,7 @@ function TabelaAnimais({ animais }: { animais: Animal[] }) {
             <th scope="col" className="py-3 font-medium">Raça</th>
             <th scope="col" className="py-3 font-medium">Lote</th>
             <th scope="col" className="py-3 font-medium">Idade</th>
+            <th scope="col" className="py-3 text-right font-medium">Peso atual</th>
             <th scope="col" className="py-3 pr-5 text-right font-medium">Situação</th>
           </tr>
         </thead>
@@ -297,6 +300,15 @@ function TabelaAnimais({ animais }: { animais: Animal[] }) {
                   "—"
                 )}
               </td>
+              <td className="py-3 text-right tabular-nums">
+                {animal.pesoAtual ? (
+                  <span title={`Pesado em ${formatarData(animal.pesoAtual.data)}`} className="font-medium">
+                    {formatarKg(animal.pesoAtual.pesoKg)}
+                  </span>
+                ) : (
+                  <span className="text-muted-foreground">—</span>
+                )}
+              </td>
               <td className="py-3 pr-5 text-right">
                 <SituacaoBadge situacao={animal.situacao} />
               </td>
@@ -321,7 +333,9 @@ function TabelaAnimais({ animais }: { animais: Animal[] }) {
                   {animal.nome && <span className="font-normal text-muted-foreground"> · {animal.nome}</span>}
                 </p>
                 <p className="truncate text-xs text-muted-foreground">
-                  {[SEXO_LABEL[animal.sexo], animal.raca, animal.lote].filter(Boolean).join(" · ")}
+                  {[SEXO_LABEL[animal.sexo], animal.lote, animal.pesoAtual && formatarKg(animal.pesoAtual.pesoKg)]
+                    .filter(Boolean)
+                    .join(" · ")}
                 </p>
               </div>
               <SituacaoBadge situacao={animal.situacao} />
@@ -330,31 +344,5 @@ function TabelaAnimais({ animais }: { animais: Animal[] }) {
         ))}
       </ul>
     </div>
-  )
-}
-
-function Paginacao({ page, total, onPage }: { page: number; total: number; onPage: (page: number) => void }) {
-  const paginas = Math.max(1, Math.ceil(total / PAGE_SIZE))
-  const inicio = (page - 1) * PAGE_SIZE + 1
-  const fim = Math.min(page * PAGE_SIZE, total)
-
-  return (
-    <nav aria-label="Paginação" className="flex items-center justify-between gap-3 text-sm text-muted-foreground">
-      <span className="tabular-nums">
-        {inicio}–{fim} de {total}
-      </span>
-      {paginas > 1 && (
-        <div className="flex gap-2">
-          <Button variant="secondary" size="sm" disabled={page <= 1} onClick={() => onPage(page - 1)}>
-            <ChevronLeft />
-            Anterior
-          </Button>
-          <Button variant="secondary" size="sm" disabled={page >= paginas} onClick={() => onPage(page + 1)}>
-            Próxima
-            <ChevronRight />
-          </Button>
-        </div>
-      )}
-    </nav>
   )
 }
