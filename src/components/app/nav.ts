@@ -56,12 +56,17 @@ export const NAV_FOOTER: NavItem[] = [{ label: "Configurações", href: "/painel
 
 const ALL_ITEMS = [...NAV_GROUPS.flatMap((group) => group.items), ...NAV_FOOTER]
 
+// Subrotas contam como a seção (ex.: /painel/rebanho/123 → Rebanho); a visão geral só vale na raiz
+export function isNavActive(pathname: string, href: string) {
+  return pathname === href || (href !== "/painel" && pathname.startsWith(`${href}/`))
+}
+
 export function findNavItem(pathname: string) {
-  return ALL_ITEMS.find((item) => item.href === pathname)
+  return ALL_ITEMS.find((item) => isNavActive(pathname, item.href))
 }
 
 export function findNavGroup(pathname: string) {
-  return NAV_GROUPS.find((group) => group.items.some((item) => item.href === pathname))
+  return NAV_GROUPS.find((group) => group.items.some((item) => isNavActive(pathname, item.href)))
 }
 
 // Seções ainda em construção — usadas pela rota /painel/[secao]

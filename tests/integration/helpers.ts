@@ -56,3 +56,21 @@ export function request(method: string, cookie?: string, body?: unknown) {
     body: body === undefined ? undefined : JSON.stringify(body),
   })
 }
+
+// Requisição para qualquer rota da API (path com query, ex.: "/api/animais?busca=br")
+export function apiRequest(path: string, method: string, cookie?: string, body?: unknown) {
+  return new Request(`http://localhost:3000${path}`, {
+    method,
+    headers: { "Content-Type": "application/json", ...(cookie && { cookie }) },
+    body: body === undefined ? undefined : JSON.stringify(body),
+  })
+}
+
+// Usuário logado que já tem a fazenda cadastrada
+export async function usuarioComFazenda() {
+  const usuario = await usuarioLogado()
+  const propriedade = await prisma.propriedade.create({
+    data: { userId: usuario.user.id, nome: "Fazenda Teste", municipio: "Linhares", uf: "ES", atividades: ["PECUARIA"], tipoRebanho: "CORTE" },
+  })
+  return { ...usuario, propriedade }
+}

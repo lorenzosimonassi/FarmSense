@@ -4,7 +4,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 
-import { NAV_FOOTER, navGroupsFor, type NavItem } from "@/components/app/nav"
+import { isNavActive, NAV_FOOTER, navGroupsFor, type NavItem } from "@/components/app/nav"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { cn } from "@/lib/utils"
 import type { Atividade } from "@/shared/schemas/propriedade"
@@ -51,7 +51,7 @@ export function Sidebar({ atividades, collapsed = false, onNavigate }: SidebarPr
               <SidebarLink
                 key={item.href}
                 item={item}
-                active={pathname === item.href}
+                active={isNavActive(pathname, item.href)}
                 collapsed={collapsed}
                 onNavigate={onNavigate}
               />
@@ -65,7 +65,7 @@ export function Sidebar({ atividades, collapsed = false, onNavigate }: SidebarPr
           <SidebarLink
             key={item.href}
             item={item}
-            active={pathname === item.href}
+            active={isNavActive(pathname, item.href)}
             collapsed={collapsed}
             onNavigate={onNavigate}
           />

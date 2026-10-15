@@ -14,7 +14,6 @@ export async function generateMetadata(props: PageProps<"/painel/[secao]">): Pro
 
 // O que cada módulo vai permitir, mostrado enquanto ele não existe (ver docs/superpowers/specs)
 const COMING: Record<string, string> = {
-  "/painel/rebanho": "Cadastro dos animais com brinco, raça, lote e situação, e o histórico completo de cada um.",
   "/painel/pesagens": "Registro de pesagens do lote inteiro de uma vez e o ganho médio diário de cada animal.",
   "/painel/sanidade": "Vacinas e medicamentos por animal, com alertas de doses atrasadas ou perto de vencer.",
   "/painel/talhoes": "As áreas da propriedade com tamanho e o plantio atual de cada uma.",

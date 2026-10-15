@@ -18,7 +18,7 @@
 - A API é **REST completa**, como descrito no README; as telas consomem a API pelo navegador.
 - Data da defesa não definida: a ordem de construção separa **essencial** de **se der tempo** (seção 9).
 
-**Fora do escopo:** financeiro, estoque/insumos, atividades no talhão, múltiplos usuários por propriedade, múltiplas propriedades por usuário, protocolos sanitários, app offline, dados climáticos.
+**Fora do escopo:** financeiro, estoque/insumos, atividades no talhão, múltiplos usuários por propriedade, múltiplas propriedades por usuário, protocolos sanitários, app offline.
 
 ## 2. Arquitetura
 
@@ -161,7 +161,7 @@ User 1──1 Propriedade 1──N Animal 1──N Pesagem
 | Próximas atividades | Nos próximos 30 dias: próximas doses (agrupadas por produto + data), plantios planejados, previsões de colheita |
 | Notificações (sino) | Calculadas na hora: vacinas atrasadas, vacinas vencendo em 30 dias, animais abaixo do GMD, colheitas previstas em até 15 dias. Sem estado de lida |
 
-Os widgets de **clima** e **chuva** são removidos (sem fonte de dados real). O módulo `src/lib/mock/painel.ts` é removido ao fim da etapa 6.
+O widget de **clima** usa dados reais da Open-Meteo, a partir do município/UF da fazenda (`src/server/services/clima.ts`); o de **chuva acumulada** é removido. Enquanto faltam dados, a Visão geral mostra os **primeiros passos**, cujo progresso é calculado a partir dos registros (`src/server/services/primeiros-passos.ts`). O módulo `src/lib/mock/painel.ts` é removido ao fim da etapa 6.
 
 ## 5. API REST
 

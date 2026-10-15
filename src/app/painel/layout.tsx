@@ -2,6 +2,7 @@ import { cookies, headers } from "next/headers"
 import { redirect } from "next/navigation"
 
 import { AppShell } from "@/components/app/AppShell"
+import { QueryProvider } from "@/components/app/QueryProvider"
 import { SIDEBAR_COOKIE } from "@/components/app/nav"
 import { auth } from "@/lib/auth"
 import { buscarPorUsuario } from "@/server/services/propriedade"
@@ -22,7 +23,7 @@ export default async function PainelLayout({ children }: LayoutProps<"/painel">)
       atividades={propriedade.atividades}
       defaultCollapsed={collapsed}
     >
-      {children}
+      <QueryProvider>{children}</QueryProvider>
     </AppShell>
   )
 }

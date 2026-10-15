@@ -1,3 +1,4 @@
+import { contar as contarAnimais } from "@/server/services/animal"
 import type { Propriedade } from "@/server/services/propriedade"
 import type { Atividade } from "@/shared/schemas/propriedade"
 
@@ -15,8 +16,8 @@ export type Passo = {
 
 // O que já foi feito vem sempre dos dados (não de uma flag salva): a lista se marca sozinha e nunca fica desatualizada
 export async function listarPassos(propriedade: Propriedade): Promise<Passo[]> {
-  // TODO: trocar pelos counts reais conforme os módulos de rebanho, sanidade e agricultura ganharem tabelas
-  const contagem = { animais: 0, pesagens: 0, vacinas: 0, talhoes: 0, safras: 0 }
+  // TODO: trocar os zeros pelos counts reais conforme pesagens, sanidade e agricultura ganharem tabelas
+  const contagem = { animais: await contarAnimais(propriedade.id), pesagens: 0, vacinas: 0, talhoes: 0, safras: 0 }
 
   const passos: Passo[] = [
     {
@@ -24,7 +25,7 @@ export async function listarPassos(propriedade: Propriedade): Promise<Passo[]> {
       atividade: "PECUARIA",
       titulo: "Cadastre seus animais",
       descricao: "É a base de tudo na pecuária: pesagens, vacinas e indicadores do rebanho partem daqui.",
-      href: "/painel/rebanho",
+      href: "/painel/rebanho?novo=1",
       acao: "Cadastrar animais",
       concluido: contagem.animais > 0,
     },

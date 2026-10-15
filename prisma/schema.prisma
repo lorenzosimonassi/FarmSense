@@ -96,6 +96,40 @@ model Propriedade {
   tipoRebanho TipoRebanho?
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
+  animais     Animal[]
 
   @@map("propriedade")
+}
+
+enum Sexo {
+  MACHO
+  FEMEA
+}
+
+enum SituacaoAnimal {
+  ATIVO
+  VENDIDO
+  MORTO
+}
+
+model Animal {
+  id             String         @id @default(cuid())
+  propriedadeId  String
+  propriedade    Propriedade    @relation(fields: [propriedadeId], references: [id], onDelete: Cascade)
+  // Brinco, tatuagem ou número de registro: o que o produtor usa para reconhecer o animal
+  identificacao  String
+  nome           String?
+  sexo           Sexo
+  raca           String?
+  dataNascimento DateTime?      @db.Date
+  lote           String?
+  situacao       SituacaoAnimal @default(ATIVO)
+  dataSaida      DateTime?      @db.Date
+  observacoes    String?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  @@unique([propriedadeId, identificacao])
+  @@index([propriedadeId, situacao])
+  @@map("animal")
 }
