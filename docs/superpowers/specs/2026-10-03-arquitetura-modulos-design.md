@@ -190,8 +190,8 @@ Prefixo `/api`. Todos os endpoints exigem sessão. Listas são paginadas com `?p
 | Plantios | `GET /plantios` | Filtros: `cultura`, `status`, `talhaoId` |
 | | `POST /plantios` · `PATCH /plantios/[id]` · `DELETE /plantios/[id]` | |
 | | `GET /plantios/safra` · `GET /plantios/culturas` | Não colhidos + colhidos em 12 meses; culturas já usadas |
-| Agregados | `GET /dashboard` | Todos os widgets da Visão geral |
-| | `GET /notificacoes` | |
+| Agregados | `GET /visao-geral` | Todos os blocos da Visão geral |
+| | `GET /notificacoes` | A lista inteira de "Precisa de atenção" (o sino do topo) |
 | | `GET /calendario?inicio&fim` | Eventos (até 62 dias): aplicações e pesagens agrupadas por dia, reforços pendentes (mesma regra dos alertas), plantios, previsões e colheitas; cada um com tom `feito`/`previsto`/`atrasado` e link de ação |
 | Relatórios | `GET /relatorios/{rebanho,desempenho,sanidade,producao}?inicio&fim&formato=json\|csv` | CSV com `Content-Disposition: attachment` |
 
@@ -204,7 +204,7 @@ Substituem a rota genérica `/painel/[secao]`, removida quando a última seção
 | Tela | Rota | Conteúdo |
 |---|---|---|
 | Primeiro acesso | `/primeiro-acesso` (grupo `(auth)`) | Formulário da propriedade para quem não tem fazenda (ex.: entrou pelo Google); destino do redirect do `painel/layout.tsx` e do 409 `PROPERTY_REQUIRED`. Quem se cadastra por e-mail já cria a fazenda no cadastro |
-| Visão geral | `/painel` | Widgets da seção 4.5 com dados reais |
+| Visão geral | `/painel` | Enquanto há passos pendentes: primeiros passos. Depois: 4 indicadores (escolhidos pelas atividades), "Precisa de atenção" (até 5 itens acionáveis), próximos 14 dias, lavouras em andamento, clima e fazenda. Propositalmente enxuta: o detalhe fica nos módulos e em Relatórios |
 | Rebanho | `/painel/rebanho` | Tabela com busca e filtros; "Novo animal" em `Sheet` |
 | Detalhe do animal | `/painel/rebanho/[id]` | Dados, gráfico de peso, histórico de pesagens e aplicações, "Registrar saída", editar, excluir |
 | Pesagens | `/painel/pesagens` | Lista recente; "Registrar pesagem" em grade: data + filtro por lote + peso por animal |

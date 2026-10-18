@@ -1,5 +1,6 @@
 "use client"
 
+import { useCallback, useEffect, useState } from "react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import {
@@ -7,6 +8,7 @@ import {
   ChevronRight,
   CircleAlert,
   CircleCheck,
+  Info,
   LogOut,
   Menu,
   PanelLeftClose,
@@ -29,8 +31,8 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { authClient } from "@/lib/auth/client"
-import { NOTIFICATIONS } from "@/lib/mock/painel"
 import { cn } from "@/lib/utils"
+import type { ItemAtencao } from "@/shared/visao-geral"
 
 export type ShellUser = { name: string; email: string }
 
@@ -95,55 +97,90 @@ export function Topbar({ user, collapsed, onToggleCollapsed, onOpenMobileNav }: 
 }
 
 const TONES = {
-  good: { icon: CircleCheck, className: "bg-status-good/12 text-status-good" },
-  warning: { icon: TriangleAlert, className: "bg-status-warning/12 text-status-warning" },
-  critical: { icon: CircleAlert, className: "bg-status-critical/10 text-status-critical" },
+  info: { icon: Info, className: "bg-series-3/10 text-series-3" },
+  alerta: { icon: TriangleAlert, className: "bg-status-warning/12 text-status-warning" },
+  critico: { icon: CircleAlert, className: "bg-status-critical/10 text-status-critical" },
 }
 
+// Calculadas na hora a partir dos dados (a mesma lista do "Precisa de atenção"): sem estado de lida.
+// Recarrega ao trocar de página e ao abrir, para refletir o que acabou de ser registrado.
 function Notifications() {
-  const unread = NOTIFICATIONS.filter((n) => n.unread).length
+  const pathname = usePathname()
+  const [itens, setItens] = useState<ItemAtencao[] | null>(null)
+  const [aberto, setAberto] = useState(false)
+
+  const carregar = useCallback(() => {
+    fetch("/api/notificacoes")
+      .then((response) => (response.ok ? response.json() : null))
+      .then((dados: ItemAtencao[] | null) => dados && setItens(dados))
+      .catch(() => {})
+  }, [])
+
+  useEffect(carregar, [carregar, pathname])
+
+  const urgentes = (itens ?? []).filter((n) => n.gravidade !== "info").length
 
   return (
-    <Popover>
+    <Popover
+      open={aberto}
+      onOpenChange={(open) => {
+        setAberto(open)
+        if (open) carregar()
+      }}
+    >
       <PopoverTrigger asChild>
-        <Button variant="ghost" size="icon" className="relative shrink-0" aria-label={`Notificações (${unread} não lidas)`}>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="relative shrink-0"
+          aria-label={itens?.length ? `Notificações (${itens.length})` : "Notificações"}
+        >
           <Bell />
-          {unread > 0 && (
+          {urgentes > 0 && (
             <span className="absolute top-1 right-1 flex size-4.5 items-center justify-center rounded-full bg-destructive text-[10px] font-bold text-destructive-foreground ring-2 ring-background">
-              {unread}
+              {urgentes}
             </span>
           )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-96 p-0">
+      <PopoverContent className="w-96 max-w-[calc(100vw-2rem)] p-0">
         <div className="flex items-center justify-between border-b border-border px-4 py-3">
           <p className="text-sm font-semibold">Notificações</p>
-          <span className="rounded-full bg-accent px-2 py-0.5 text-xs font-semibold text-primary">{unread} novas</span>
+          {itens && itens.length > 0 && (
+            <span className="rounded-full bg-accent px-2 py-0.5 text-xs font-semibold text-primary">
+              {itens.length === 1 ? "1 aviso" : `${itens.length} avisos`}
+            </span>
+          )}
         </div>
-        <ul className="max-h-[min(24rem,60dvh)] overflow-y-auto p-1.5">
-          {NOTIFICATIONS.map((n) => {
-            const tone = TONES[n.tone]
-            return (
-              <li key={n.id} className="flex gap-3 rounded-lg p-2.5 hover:bg-accent/60">
-                <span className={cn("flex size-8 shrink-0 items-center justify-center rounded-full", tone.className)}>
-                  <tone.icon className="size-4" />
-                </span>
-                <div className="min-w-0 flex-1">
-                  <p className="flex items-start justify-between gap-2 text-sm leading-snug font-medium">
-                    {n.title}
-                    {n.unread && (
-                      <span className="mt-1.5 size-2 shrink-0 rounded-full bg-primary">
-                        <span className="sr-only">Não lida</span>
-                      </span>
-                    )}
-                  </p>
-                  <p className="mt-0.5 text-xs text-muted-foreground">{n.detail}</p>
-                  <p className="mt-1 text-[11px] text-muted-foreground/80">{n.time}</p>
-                </div>
-              </li>
-            )
-          })}
-        </ul>
+        {itens === null ? (
+          <p className="px-4 py-6 text-center text-sm text-muted-foreground">Carregando…</p>
+        ) : itens.length === 0 ? (
+          <div className="flex flex-col items-center gap-2 px-4 py-8 text-center">
+            <CircleCheck className="size-6 text-status-good" />
+            <p className="text-sm font-medium">Tudo em dia</p>
+            <p className="text-xs text-muted-foreground">Nenhum reforço, colheita ou animal pedindo atenção.</p>
+          </div>
+        ) : (
+          <ul className="max-h-[min(24rem,60dvh)] overflow-y-auto p-1.5">
+            {itens.map((n) => {
+              const tone = TONES[n.gravidade]
+              return (
+                <li key={n.id}>
+                  <Link href={n.href} onClick={() => setAberto(false)} className="flex gap-3 rounded-lg p-2.5 outline-none hover:bg-accent/60 focus-visible:bg-accent/60">
+                    <span className={cn("flex size-8 shrink-0 items-center justify-center rounded-full", tone.className)}>
+                      <tone.icon className="size-4" />
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm leading-snug font-medium">{n.titulo}</p>
+                      <p className="mt-0.5 text-xs text-muted-foreground">{n.detalhe}</p>
+                      <p className="mt-1 text-[11px] font-medium text-primary">{n.acao}</p>
+                    </div>
+                  </Link>
+                </li>
+              )
+            })}
+          </ul>
+        )}
       </PopoverContent>
     </Popover>
   )
