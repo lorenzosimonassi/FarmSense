@@ -97,6 +97,7 @@ model Propriedade {
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
   animais     Animal[]
+  talhoes     Talhao[]
 
   @@map("propriedade")
 }
@@ -174,4 +175,20 @@ model AplicacaoSanitaria {
   @@index([animalId, produto])
   @@index([proximaDose])
   @@map("aplicacao_sanitaria")
+}
+
+model Talhao {
+  id            String      @id @default(cuid())
+  propriedadeId String
+  propriedade   Propriedade @relation(fields: [propriedadeId], references: [id], onDelete: Cascade)
+  nome          String
+  areaHa        Decimal     @db.Decimal(10, 2)
+  // Contorno desenhado no mapa: anel do polígono GeoJSON, [[lng, lat], ...] sem repetir o primeiro ponto
+  contorno      Json?
+  observacoes   String?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  @@unique([propriedadeId, nome])
+  @@map("talhao")
 }

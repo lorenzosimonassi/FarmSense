@@ -101,6 +101,17 @@ type RespostaPrevisao = {
   }
 }
 
+// Centro do município, usado como ponto de partida do mapa dos talhões
+export async function localizarMunicipio(municipio: string, uf: string) {
+  try {
+    const lugar = await geocodificar(municipio, uf)
+    return lugar && { lat: lugar.latitude, lng: lugar.longitude }
+  } catch (error) {
+    console.error("[clima] geocodificação", error)
+    return null
+  }
+}
+
 export async function buscarClima(municipio: string, uf: string): Promise<ResultadoClima> {
   try {
     const lugar = await geocodificar(municipio, uf)

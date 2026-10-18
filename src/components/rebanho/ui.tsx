@@ -30,18 +30,21 @@ export function FormSheet({
   onOpenChange,
   title,
   description,
+  className,
   children,
 }: {
   open: boolean
   onOpenChange: (open: boolean) => void
   title: string
   description?: string
+  // Largura extra para formulários com mapa (ex.: talhões)
+  className?: string
   children: React.ReactNode
 }) {
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
-        className="w-full gap-0 sm:max-w-lg"
+        className={cn("w-full gap-0 sm:max-w-lg", className)}
         aria-describedby={undefined}
       >
         <SheetHeader className="border-b border-border pr-14">

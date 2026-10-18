@@ -97,7 +97,7 @@ User 1──1 Propriedade 1──N Animal 1──N Pesagem
 | **Animal** | `id`, `propriedadeId`, `identificacao`, `nome?`, `sexo` (`MACHO`/`FEMEA`), `raca?`, `dataNascimento?`, `lote?`, `situacao` (`ATIVO`/`VENDIDO`/`MORTO`, padrão `ATIVO`), `dataSaida?`, `observacoes?`, `createdAt`, `updatedAt` | único (`propriedadeId`, `identificacao`); índice (`propriedadeId`, `situacao`) |
 | **Pesagem** | `id`, `animalId`, `data`, `pesoKg` (Decimal 7,2), `observacao?`, `createdAt` | único (`animalId`, `data`) |
 | **AplicacaoSanitaria** | `id`, `animalId`, `tipo` (`VACINA`/`VERMIFUGO`/`MEDICAMENTO`/`OUTRO`), `produto`, `dose?`, `dataAplicacao`, `proximaDose?`, `observacao?`, `createdAt` | índice (`animalId`, `produto`); índice (`proximaDose`) |
-| **Talhao** | `id`, `propriedadeId`, `nome`, `areaHa` (Decimal 10,2), `observacoes?`, `createdAt`, `updatedAt` | único (`propriedadeId`, `nome`) |
+| **Talhao** | `id`, `propriedadeId`, `nome`, `areaHa` (Decimal 10,2), `contorno?` (Json: anel GeoJSON `[[lng, lat], ...]` desenhado no mapa), `observacoes?`, `createdAt`, `updatedAt` | único (`propriedadeId`, `nome`); contorno com 3–500 pontos e sem bordas que se cruzam |
 | **Plantio** | `id`, `talhaoId`, `cultura`, `variedade?`, `dataPlantio`, `previsaoColheita?`, `dataColheita?`, `quantidadeColhida?` (Decimal 12,2), `unidade?` (`SC`/`T`/`KG`), `observacoes?`, `createdAt`, `updatedAt` | índice (`talhaoId`, `dataPlantio`) |
 
 **Exclusão:** `Propriedade → Animal/Talhao`, `Animal → Pesagem/AplicacaoSanitaria` e `Talhao → Plantio` usam `onDelete: Cascade`. Excluir animal ou talhão é para corrigir cadastro errado e exige confirmação na tela; saída do rebanho usa `situacao` + `dataSaida`, preservando histórico.
@@ -208,7 +208,7 @@ Substituem a rota genérica `/painel/[secao]`, que é removida quando todas as s
 | Detalhe do animal | `/painel/rebanho/[id]` | Dados, gráfico de peso, histórico de pesagens e aplicações, "Registrar saída", editar, excluir |
 | Pesagens | `/painel/pesagens` | Lista recente; "Registrar pesagem" em grade: data + filtro por lote + peso por animal |
 | Sanidade | `/painel/sanidade` | Abas Alertas / Histórico; "Registrar aplicação" com seleção múltipla e "selecionar lote" |
-| Talhões | `/painel/talhoes` | Cards com área e plantio atual; detalhe com histórico |
+| Talhões | `/painel/talhoes` | Mapa de satélite com os contornos + cards com área; formulário desenha o contorno e calcula a área (`src/shared/geo.ts`); detalhe com mapa, perímetro e "Como chegar" |
 | Culturas | `/painel/culturas` | Lista de plantios com filtros; "Novo plantio", "Registrar colheita" |
 | Calendário | `/painel/calendario` | Grade mensal com eventos coloridos por tipo; lista no celular |
 | Relatórios | `/painel/relatorios` | 4 relatórios: período, tabela, "Exportar CSV", "Imprimir" |
