@@ -192,7 +192,7 @@ Prefixo `/api`. Todos os endpoints exigem sessão. Listas são paginadas com `?p
 | | `GET /plantios/safra` · `GET /plantios/culturas` | Não colhidos + colhidos em 12 meses; culturas já usadas |
 | Agregados | `GET /dashboard` | Todos os widgets da Visão geral |
 | | `GET /notificacoes` | |
-| | `GET /calendario?inicio&fim` | Eventos: aplicações, próximas doses, plantios, previsões e colheitas |
+| | `GET /calendario?inicio&fim` | Eventos (até 62 dias): aplicações e pesagens agrupadas por dia, reforços pendentes (mesma regra dos alertas), plantios, previsões e colheitas; cada um com tom `feito`/`previsto`/`atrasado` e link de ação |
 | Relatórios | `GET /relatorios/{rebanho,desempenho,sanidade,producao}?inicio&fim&formato=json\|csv` | CSV com `Content-Disposition: attachment` |
 
 **Registro em lote:** executado em uma transação Prisma (tudo ou nada). Se algum item for inválido, responde 400 com `fields` indexados pelo item (ex.: `itens.3.pesoKg`). Um mesmo animal não pode aparecer duas vezes no lote.
@@ -211,7 +211,7 @@ Substituem a rota genérica `/painel/[secao]`, que é removida quando todas as s
 | Sanidade | `/painel/sanidade` | Abas Alertas / Histórico; "Registrar aplicação" com seleção múltipla e "selecionar lote" |
 | Talhões | `/painel/talhoes` | Mapa de satélite com os contornos + cards com área; formulário desenha o contorno e calcula a área (`src/shared/geo.ts`); detalhe com mapa, perímetro e "Como chegar" |
 | Culturas | `/painel/culturas` | Resumo da safra, "Na lavoura agora" (progresso do ciclo e "Registrar colheita"), linha do tempo por talhão e histórico com filtros; previsão de colheita sugerida pelo ciclo médio da cultura |
-| Calendário | `/painel/calendario` | Grade mensal com eventos coloridos por tipo; lista no celular |
+| Calendário | `/painel/calendario` | Grade mensal (pílulas no computador, pontos no celular) + painel do dia com ações; modo Agenda; filtros por tipo; `?mes=AAAA-MM` na URL; setas do teclado; meses vizinhos pré-carregados |
 | Relatórios | `/painel/relatorios` | 4 relatórios: período, tabela, "Exportar CSV", "Imprimir" |
 | Configurações | `/painel/configuracoes` | Editar propriedade |
 

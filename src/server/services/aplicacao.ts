@@ -151,7 +151,7 @@ type Ultima = {
 }
 
 // Última aplicação de cada (animal, produto) dos animais ativos. Nome do produto sem diferenciar maiúsculas.
-async function ultimasDosAtivos(propriedadeId: string) {
+export async function ultimasDosAtivos(propriedadeId: string) {
   return prisma.$queryRaw<Ultima[]>`
     SELECT DISTINCT ON (ap."animalId", lower(ap.produto))
            ap."animalId", a.identificacao, a.nome, a.lote, ap.produto, ap.tipo, ap."dataAplicacao", ap."proximaDose"
