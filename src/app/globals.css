@@ -269,3 +269,22 @@
   opacity: 0.75 !important;
   font-weight: 500;
 }
+
+/* ---------- Impressão (relatórios) ---------- */
+
+@media print {
+  @page {
+    margin: 14mm;
+  }
+
+  html,
+  body {
+    background: #fff;
+  }
+
+  /* Cores dos gráficos e das faixas saem no papel */
+  * {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+}

@@ -69,9 +69,4 @@ export function findNavGroup(pathname: string) {
   return NAV_GROUPS.find((group) => group.items.some((item) => isNavActive(pathname, item.href)))
 }
 
-// Seções ainda em construção — usadas pela rota /painel/[secao]
-export function findSection(slug: string) {
-  return ALL_ITEMS.find((item) => item.href === `/painel/${slug}`)
-}
-
 export const SIDEBAR_COOKIE = "sidebar_collapsed"

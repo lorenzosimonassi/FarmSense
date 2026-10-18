@@ -23,7 +23,7 @@ export function Panel({ title, description, action, table, variant = "card", cla
   return (
     <section
       className={cn(
-        "@container flex min-w-0 flex-col",
+        "@container flex min-w-0 flex-col break-inside-avoid",
         variant === "card" ? "rounded-2xl border border-border bg-card p-4 shadow-xs @sm:p-5" : "py-1",
         className
       )}
@@ -41,7 +41,7 @@ export function Panel({ title, description, action, table, variant = "card", cla
               onClick={() => setShowTable((value) => !value)}
               aria-pressed={showTable}
               title={showTable ? "Ver gráfico" : "Ver como tabela"}
-              className="flex size-8 cursor-pointer items-center justify-center rounded-lg text-muted-foreground transition-colors outline-none hover:bg-accent hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring pointer-coarse:size-10"
+              className="flex size-8 cursor-pointer items-center justify-center rounded-lg text-muted-foreground print:hidden transition-colors outline-none hover:bg-accent hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring pointer-coarse:size-10"
             >
               {showTable ? <ChartLine className="size-4" /> : <Table2 className="size-4" />}
               <span className="sr-only">{showTable ? "Ver gráfico" : "Ver como tabela"}</span>

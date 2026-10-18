@@ -12,7 +12,8 @@ export function ChartTooltip({
   label,
   unit,
   labelPrefix = "",
-}: TooltipContentProps & { unit: string; labelPrefix?: string }) {
+  formatar = (valor) => number.format(valor),
+}: TooltipContentProps & { unit: string; labelPrefix?: string; formatar?: (valor: number) => string }) {
   if (!active || !payload?.length) return null
 
   return (
@@ -27,7 +28,7 @@ export function ChartTooltip({
               style={{ backgroundColor: entry.color ?? (entry.payload as { color?: string })?.color }}
             />
             <span className="text-sm font-semibold tabular-nums">
-              {number.format(Number(entry.value))} {unit}
+              {formatar(Number(entry.value))} {unit}
             </span>
             <span className="text-muted-foreground">{entry.name}</span>
           </li>

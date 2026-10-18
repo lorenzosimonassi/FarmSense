@@ -45,7 +45,7 @@ export function AppShell({ user, atividades, defaultCollapsed, children }: AppSh
   return (
     <TooltipProvider>
       <div className={cn("min-h-dvh bg-background", collapsed ? "[--sidebar-w:4.5rem]" : "[--sidebar-w:16rem]")}>
-        <aside className="fixed inset-y-0 left-0 z-40 hidden w-(--sidebar-w) transition-[width] duration-300 ease-out motion-reduce:transition-none lg:block">
+        <aside className="fixed inset-y-0 left-0 z-40 hidden w-(--sidebar-w) print:hidden transition-[width] duration-300 ease-out motion-reduce:transition-none lg:block">
           <Sidebar atividades={atividades} collapsed={collapsed} />
         </aside>
 
@@ -60,7 +60,7 @@ export function AppShell({ user, atividades, defaultCollapsed, children }: AppSh
           </SheetContent>
         </Sheet>
 
-        <div className="flex min-h-dvh flex-col transition-[padding] duration-300 ease-out motion-reduce:transition-none lg:pl-(--sidebar-w)">
+        <div className="flex min-h-dvh flex-col transition-[padding] duration-300 ease-out motion-reduce:transition-none lg:pl-(--sidebar-w) print:pl-0">
           <Topbar
             user={user}
             collapsed={collapsed}

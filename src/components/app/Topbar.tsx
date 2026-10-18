@@ -47,7 +47,7 @@ export function Topbar({ user, collapsed, onToggleCollapsed, onOpenMobileNav }: 
   const group = findNavGroup(pathname)
 
   return (
-    <header className="sticky top-0 z-30 border-b border-border bg-background/80 pt-[env(safe-area-inset-top)] backdrop-blur-lg">
+    <header className="sticky top-0 z-30 print:hidden border-b border-border bg-background/80 pt-[env(safe-area-inset-top)] backdrop-blur-lg">
       <div className="flex h-16 items-center gap-1.5 px-[max(0.75rem,env(safe-area-inset-left))] sm:gap-3 sm:px-6 lg:px-8">
         <Button variant="ghost" size="icon" className="lg:hidden" aria-label="Abrir menu" onClick={onOpenMobileNav}>
           <Menu />

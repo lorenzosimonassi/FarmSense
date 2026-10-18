@@ -199,7 +199,7 @@ Prefixo `/api`. Todos os endpoints exigem sessão. Listas são paginadas com `?p
 
 ## 6. Telas
 
-Substituem a rota genérica `/painel/[secao]`, que é removida quando todas as seções existirem.
+Substituem a rota genérica `/painel/[secao]`, removida quando a última seção (Relatórios) ficou pronta.
 
 | Tela | Rota | Conteúdo |
 |---|---|---|
@@ -212,7 +212,7 @@ Substituem a rota genérica `/painel/[secao]`, que é removida quando todas as s
 | Talhões | `/painel/talhoes` | Mapa de satélite com os contornos + cards com área; formulário desenha o contorno e calcula a área (`src/shared/geo.ts`); detalhe com mapa, perímetro e "Como chegar" |
 | Culturas | `/painel/culturas` | Resumo da safra, "Na lavoura agora" (progresso do ciclo e "Registrar colheita"), linha do tempo por talhão e histórico com filtros; previsão de colheita sugerida pelo ciclo médio da cultura |
 | Calendário | `/painel/calendario` | Grade mensal (pílulas no computador, pontos no celular) + painel do dia com ações; modo Agenda; filtros por tipo; `?mes=AAAA-MM` na URL; setas do teclado; meses vizinhos pré-carregados |
-| Relatórios | `/painel/relatorios` | 4 relatórios: período, tabela, "Exportar CSV", "Imprimir" |
+| Relatórios | `/painel/relatorios` | 4 relatórios (só os das atividades da fazenda): indicadores, gráficos (paleta validada pela skill de dataviz; cada gráfico com "ver como tabela"), tabela ordenável idêntica ao CSV; período por atalhos ou personalizado; `?tipo=&periodo=` na URL; "Exportar CSV" (`;`, vírgula decimal, BOM) e "Imprimir" com cabeçalho próprio |
 | Configurações | `/painel/configuracoes` | Editar propriedade |
 
 **Menu:** os grupos Pecuária (Rebanho, Pesagens, Sanidade) e Agricultura (Talhões, Culturas) aparecem só se a fazenda tiver essa atividade. Calendário fica no grupo Gestão, junto de Relatórios.
