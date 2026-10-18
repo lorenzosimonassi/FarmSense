@@ -188,7 +188,34 @@ model Talhao {
   observacoes   String?
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
+  plantios      Plantio[]
 
   @@unique([propriedadeId, nome])
   @@map("talhao")
+}
+
+enum UnidadeColheita {
+  SC
+  T
+  KG
+}
+
+// Um ciclo de uma cultura num talhão, do plantio à colheita. O status (planejado, em andamento, colhido) é calculado
+model Plantio {
+  id                String           @id @default(cuid())
+  talhaoId          String
+  talhao            Talhao           @relation(fields: [talhaoId], references: [id], onDelete: Cascade)
+  cultura           String
+  variedade         String?
+  dataPlantio       DateTime         @db.Date
+  previsaoColheita  DateTime?        @db.Date
+  dataColheita      DateTime?        @db.Date
+  quantidadeColhida Decimal?         @db.Decimal(12, 2)
+  unidade           UnidadeColheita?
+  observacoes       String?
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+
+  @@index([talhaoId, dataPlantio])
+  @@map("plantio")
 }

@@ -3,9 +3,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
 import { apiFetch } from "@/lib/api/client"
-import type { Talhao, TalhaoInput } from "@/shared/schemas/talhao"
+import type { Talhao, TalhaoInput, TalhaoNaLista } from "@/shared/schemas/talhao"
 
-export type ListaTalhoes = { items: Talhao[]; total: number; areaHa: number }
+export type ListaTalhoes = { items: TalhaoNaLista[]; total: number; areaHa: number }
 
 // Tudo de talhões fica sob ["talhoes"]: uma invalidação atualiza lista e detalhe
 export const talhoesKeys = {
@@ -43,6 +43,8 @@ export function useSalvarTalhao(id?: string) {
       apiFetch<Talhao>(id ? `/talhoes/${id}` : "/talhoes", { method: id ? "PATCH" : "POST", body: data }),
     onSuccess: (talhao) => {
       queryClient.setQueryData(talhoesKeys.detalhe(talhao.id), talhao)
+      // Nome e área do talhão aparecem nos plantios (e a área muda a produtividade)
+      queryClient.invalidateQueries({ queryKey: ["plantios"] })
       return queryClient.invalidateQueries({ queryKey: talhoesKeys.todos })
     },
   })
@@ -54,6 +56,8 @@ export function useExcluirTalhao(id: string) {
     mutationFn: () => apiFetch<void>(`/talhoes/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.removeQueries({ queryKey: talhoesKeys.detalhe(id) })
+      // Os plantios do talhão são apagados junto (cascade)
+      queryClient.invalidateQueries({ queryKey: ["plantios"] })
       return queryClient.invalidateQueries({ queryKey: talhoesKeys.todos })
     },
   })

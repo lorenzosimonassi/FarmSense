@@ -1,8 +1,9 @@
 import { Prisma, type Talhao as TalhaoRow } from "@/generated/prisma/client"
 import { prisma } from "@/lib/db"
 import { HttpError } from "@/server/http/responses"
+import { plantiosAtuais } from "@/server/services/plantio"
 import type { Contorno } from "@/shared/geo"
-import type { FiltrosTalhoes, Talhao, TalhaoData } from "@/shared/schemas/talhao"
+import type { FiltrosTalhoes, Talhao, TalhaoData, TalhaoNaLista } from "@/shared/schemas/talhao"
 
 function toTalhao(row: TalhaoRow): Talhao {
   return {
@@ -56,8 +57,11 @@ export async function listar(propriedadeId: string, filtros: FiltrosTalhoes) {
   // (Talhão 2 antes de Talhão 10), que o ORDER BY do banco não faz, e só então pagina
   const todos = rows.map(toTalhao).sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR", { numeric: true }))
   const inicio = (filtros.page - 1) * filtros.pageSize
+  const pagina = todos.slice(inicio, inicio + filtros.pageSize)
+  const atuais = await plantiosAtuais(pagina.map((talhao) => talhao.id))
+  const items: TalhaoNaLista[] = pagina.map((talhao) => ({ ...talhao, plantioAtual: atuais.get(talhao.id) ?? null }))
   return {
-    items: todos.slice(inicio, inicio + filtros.pageSize),
+    items,
     total: todos.length,
     areaHa: Number(soma._sum.areaHa ?? 0),
   }

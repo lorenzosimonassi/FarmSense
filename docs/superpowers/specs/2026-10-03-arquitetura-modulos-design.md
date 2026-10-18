@@ -141,7 +141,7 @@ User 1──1 Propriedade 1──N Animal 1──N Pesagem
   - `COLHIDO` se `dataColheita` preenchida;
   - senão `PLANEJADO` se `dataPlantio > hoje`;
   - senão `EM_ANDAMENTO`.
-- Um talhão tem no máximo **1 plantio em andamento**; violar retorna 409 `BUSINESS_RULE`.
+- Os ciclos de um mesmo talhão **não se sobrepõem** (`src/shared/plantio.ts`, `sobrepoe`): o ciclo vai do plantio até a colheita; sem colheita, até a previsão (ou até hoje, se ela venceu); sem previsão nem colheita, ocupa o talhão indefinidamente. Colher e plantar no mesmo dia é permitido. Isso inclui "no máximo **1 plantio em andamento**". Violar retorna 409 `BUSINESS_RULE`; a checagem roda numa transação com `SELECT ... FOR UPDATE` na linha do talhão.
 - `previsaoColheita ≥ dataPlantio`; `dataColheita ≥ dataPlantio`; `dataColheita` não futura.
 - `unidade` é obrigatória quando `quantidadeColhida` é informada; `quantidadeColhida` exige `dataColheita`.
 - **Produtividade:** `quantidadeColhida / talhao.areaHa` (ex.: sc/ha).
@@ -189,6 +189,7 @@ Prefixo `/api`. Todos os endpoints exigem sessão. Listas são paginadas com `?p
 | | `GET /talhoes/[id]` · `PATCH` · `DELETE` | Detalhe inclui histórico de plantios |
 | Plantios | `GET /plantios` | Filtros: `cultura`, `status`, `talhaoId` |
 | | `POST /plantios` · `PATCH /plantios/[id]` · `DELETE /plantios/[id]` | |
+| | `GET /plantios/safra` · `GET /plantios/culturas` | Não colhidos + colhidos em 12 meses; culturas já usadas |
 | Agregados | `GET /dashboard` | Todos os widgets da Visão geral |
 | | `GET /notificacoes` | |
 | | `GET /calendario?inicio&fim` | Eventos: aplicações, próximas doses, plantios, previsões e colheitas |
@@ -209,7 +210,7 @@ Substituem a rota genérica `/painel/[secao]`, que é removida quando todas as s
 | Pesagens | `/painel/pesagens` | Lista recente; "Registrar pesagem" em grade: data + filtro por lote + peso por animal |
 | Sanidade | `/painel/sanidade` | Abas Alertas / Histórico; "Registrar aplicação" com seleção múltipla e "selecionar lote" |
 | Talhões | `/painel/talhoes` | Mapa de satélite com os contornos + cards com área; formulário desenha o contorno e calcula a área (`src/shared/geo.ts`); detalhe com mapa, perímetro e "Como chegar" |
-| Culturas | `/painel/culturas` | Lista de plantios com filtros; "Novo plantio", "Registrar colheita" |
+| Culturas | `/painel/culturas` | Resumo da safra, "Na lavoura agora" (progresso do ciclo e "Registrar colheita"), linha do tempo por talhão e histórico com filtros; previsão de colheita sugerida pelo ciclo médio da cultura |
 | Calendário | `/painel/calendario` | Grade mensal com eventos coloridos por tipo; lista no celular |
 | Relatórios | `/painel/relatorios` | 4 relatórios: período, tabela, "Exportar CSV", "Imprimir" |
 | Configurações | `/painel/configuracoes` | Editar propriedade |

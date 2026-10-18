@@ -5,6 +5,7 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { ArrowLeft, ExternalLink, Loader2, Map as MapIcon, Pencil, Trash2 } from "lucide-react"
 
+import { PlantiosDoTalhao } from "@/components/culturas/PlantiosDoTalhao"
 import { FormSheet } from "@/components/rebanho/ui"
 import { TalhaoForm } from "@/components/talhoes/TalhaoForm"
 import { MapaVisao } from "@/components/talhoes/mapa"
@@ -134,6 +135,8 @@ export function TalhaoDetalhe({ inicial, areaFazendaHa }: { inicial: Talhao; are
         </section>
       </div>
 
+      <PlantiosDoTalhao talhaoId={talhao.id} />
+
       <FormSheet open={editando} onOpenChange={setEditando} title={`Editar ${talhao.nome}`} className="sm:max-w-2xl">
         <TalhaoForm talhao={talhao} onSaved={() => setEditando(false)} />
       </FormSheet>
@@ -180,7 +183,7 @@ function ExcluirTalhao({ talhao }: { talhao: Talhao }) {
       <PopoverContent align="end" className="flex w-72 flex-col gap-3">
         <p className="text-sm font-semibold">Excluir {talhao.nome}?</p>
         <p className="text-sm text-muted-foreground">
-          O talhão e o contorno desenhado são apagados. Use só para corrigir um cadastro feito por engano.
+          O talhão, o contorno e todo o histórico de plantios dele são apagados. Use só para corrigir um cadastro feito por engano.
         </p>
         {erro && <p className="text-sm text-destructive">{erro}</p>}
         <div className="flex justify-end gap-2">

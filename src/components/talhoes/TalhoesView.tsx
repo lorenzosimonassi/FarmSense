@@ -5,6 +5,7 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { ArrowRight, Map as MapIcon, PartyPopper, Plus, Search, SearchX, TriangleAlert } from "lucide-react"
 
+import { CulturaPonto } from "@/components/culturas/ui"
 import { campoClasse } from "@/components/rebanho/campos"
 import { FormSheet } from "@/components/rebanho/ui"
 import { EmptyState, ErrorState, PageHeader, PanelSkeleton, Skeleton } from "@/components/painel/states"
@@ -15,7 +16,8 @@ import { Button } from "@/components/ui/button"
 import { useTalhoes } from "@/lib/api/hooks/talhoes"
 import { cn } from "@/lib/utils"
 import { formatarHa } from "@/shared/geo"
-import type { Talhao } from "@/shared/schemas/talhao"
+import { formatarData } from "@/shared/datas"
+import type { Talhao, TalhaoNaLista } from "@/shared/schemas/talhao"
 
 const BUSCA_A_PARTIR_DE = 7
 const pct = new Intl.NumberFormat("pt-BR", { style: "percent", maximumFractionDigits: 1 })
@@ -270,12 +272,13 @@ function CardTalhao({
   destacado,
   onDestaque,
 }: {
-  talhao: Talhao
+  talhao: TalhaoNaLista
   referenciaHa: number
   destacado: boolean
   onDestaque: (id: string | null) => void
 }) {
   const fracao = referenciaHa > 0 ? talhao.areaHa / referenciaHa : 0
+  const atual = talhao.plantioAtual
 
   return (
     <Link
@@ -294,6 +297,23 @@ function CardTalhao({
         <p className="truncate font-semibold">{talhao.nome}</p>
         <p className="mt-0.5 text-sm text-muted-foreground tabular-nums">
           {formatarHa(talhao.areaHa)} · {pct.format(fracao)}
+        </p>
+        <p className="mt-1 flex items-center gap-1.5 truncate text-xs">
+          {atual ? (
+            <>
+              <CulturaPonto cultura={atual.cultura} />
+              <span className="truncate font-medium">{atual.cultura}</span>
+              <span className="truncate text-muted-foreground">
+                {atual.status === "PLANEJADO"
+                  ? `· planta em ${formatarData(atual.dataPlantio)}`
+                  : atual.previsaoColheita
+                    ? `· colheita ${formatarData(atual.previsaoColheita)}`
+                    : "· em andamento"}
+              </span>
+            </>
+          ) : (
+            <span className="text-muted-foreground">Livre, sem plantio</span>
+          )}
         </p>
       </div>
       <ArrowRight className="size-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5" />

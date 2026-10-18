@@ -2,6 +2,7 @@ import * as z from "zod"
 
 import { areaHa, autointersecta, type Contorno } from "@/shared/geo"
 import { decimal, textoOpcional } from "@/shared/schemas/campos"
+import type { PlantioResumo } from "@/shared/schemas/plantio"
 
 export const AREA_MAXIMA_HA = 100_000
 export const PONTOS_MAXIMOS = 500
@@ -16,6 +17,9 @@ export type Talhao = {
   createdAt: string
   updatedAt: string
 }
+
+// Na lista, o talhão vem com o que está plantado nele agora (ou o próximo plantio planejado)
+export type TalhaoNaLista = Talhao & { plantioAtual: PlantioResumo | null }
 
 const pontoSchema = z.tuple([
   z.number().min(-180).max(180),

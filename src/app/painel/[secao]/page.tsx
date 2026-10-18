@@ -14,7 +14,6 @@ export async function generateMetadata(props: PageProps<"/painel/[secao]">): Pro
 
 // O que cada módulo vai permitir, mostrado enquanto ele não existe (ver docs/superpowers/specs)
 const COMING: Record<string, string> = {
-  "/painel/culturas": "Os plantios de cada talhão, da data de plantio à colheita e à produtividade.",
   "/painel/calendario": "Plantios, colheitas e próximas doses de vacina numa agenda mensal.",
   "/painel/relatorios": "Relatórios de rebanho, desempenho, sanidade e produção, com exportação em CSV.",
 }
