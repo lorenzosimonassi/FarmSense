@@ -9,6 +9,7 @@ import { TextareaField } from "@/components/rebanho/campos"
 import { MapaEditor, type MudancaContorno } from "@/components/talhoes/mapa"
 import { Button } from "@/components/ui/button"
 import { ApiError } from "@/lib/api/client"
+import { useLimiteFazenda } from "@/lib/api/hooks/propriedade"
 import { useLocalizacaoFazenda, useSalvarTalhao, useTalhoes } from "@/lib/api/hooks/talhoes"
 import type { FieldErrors } from "@/lib/auth/schemas"
 import { fieldErrors } from "@/lib/auth/schemas"
@@ -56,6 +57,7 @@ export function TalhaoForm({
   const salvar = useSalvarTalhao(talhao?.id)
   const { data: lista } = useTalhoes()
   const { data: centroFazenda } = useLocalizacaoFazenda()
+  const { data: limite } = useLimiteFazenda()
   const outros = (lista?.items ?? []).filter((item) => item.id !== talhao?.id)
 
   const areaDoMapa = values.contorno ? areaHa(values.contorno) : null
@@ -173,6 +175,7 @@ export function TalhaoForm({
           onChange={mudarContorno}
           outros={outros}
           centroFazenda={centroFazenda}
+          limite={limite?.contornos}
         />
         {errors.contorno && (
           <p id="contorno-error" className="text-[13px] text-destructive">

@@ -13,7 +13,7 @@ export class ApiError extends Error {
   }
 }
 
-type Options = { method?: "GET" | "POST" | "PATCH" | "DELETE"; body?: unknown; params?: Record<string, unknown> }
+type Options = { method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE"; body?: unknown; params?: Record<string, unknown> }
 
 export async function apiFetch<T>(path: string, { method = "GET", body, params }: Options = {}): Promise<T> {
   const query = new URLSearchParams()

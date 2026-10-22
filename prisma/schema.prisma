@@ -10,13 +10,13 @@ datasource db {
 // Modelos usados pelo Better Auth (https://www.better-auth.com/docs/concepts/database)
 
 model User {
-  id            String    @id
+  id            String       @id
   name          String
-  email         String    @unique
-  emailVerified Boolean   @default(false)
+  email         String       @unique
+  emailVerified Boolean      @default(false)
   image         String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
   sessions      Session[]
   accounts      Account[]
   propriedade   Propriedade?
@@ -85,21 +85,40 @@ enum TipoRebanho {
 }
 
 model Propriedade {
-  id          String       @id @default(cuid())
-  userId      String       @unique
-  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id          String         @id @default(cuid())
+  userId      String         @unique
+  user        User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   nome        String
   municipio   String
-  uf          String       @db.Char(2)
-  areaTotalHa Decimal?     @db.Decimal(10, 2)
+  uf          String         @db.Char(2)
+  areaTotalHa Decimal?       @db.Decimal(10, 2)
   atividades  Atividade[]
   tipoRebanho TipoRebanho?
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
   animais     Animal[]
   talhoes     Talhao[]
+  limite      LimiteFazenda?
 
   @@map("propriedade")
+}
+
+// Perímetro da fazenda importado do CAR. Fica fora de Propriedade porque pode ter milhares de pontos,
+// e a fazenda é lida em toda requisição do painel
+model LimiteFazenda {
+  id            String      @id @default(cuid())
+  propriedadeId String      @unique
+  propriedade   Propriedade @relation(fields: [propriedadeId], references: [id], onDelete: Cascade)
+  // Um anel por gleba: [[[lng, lat], ...], ...], cada anel sem repetir o primeiro ponto
+  contornos     Json
+  areaHa        Decimal     @db.Decimal(10, 2)
+  codigoCar     String?
+  // Nome do arquivo importado, para o produtor saber de onde veio o contorno
+  arquivo       String?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  @@map("limite_fazenda")
 }
 
 enum Sexo {
@@ -114,21 +133,21 @@ enum SituacaoAnimal {
 }
 
 model Animal {
-  id             String         @id @default(cuid())
+  id             String               @id @default(cuid())
   propriedadeId  String
-  propriedade    Propriedade    @relation(fields: [propriedadeId], references: [id], onDelete: Cascade)
+  propriedade    Propriedade          @relation(fields: [propriedadeId], references: [id], onDelete: Cascade)
   // Brinco, tatuagem ou número de registro: o que o produtor usa para reconhecer o animal
   identificacao  String
   nome           String?
   sexo           Sexo
   raca           String?
-  dataNascimento DateTime?      @db.Date
+  dataNascimento DateTime?            @db.Date
   lote           String?
-  situacao       SituacaoAnimal @default(ATIVO)
-  dataSaida      DateTime?      @db.Date
+  situacao       SituacaoAnimal       @default(ATIVO)
+  dataSaida      DateTime?            @db.Date
   observacoes    String?
-  createdAt      DateTime       @default(now())
-  updatedAt      DateTime       @updatedAt
+  createdAt      DateTime             @default(now())
+  updatedAt      DateTime             @updatedAt
   pesagens       Pesagem[]
   aplicacoes     AplicacaoSanitaria[]
 

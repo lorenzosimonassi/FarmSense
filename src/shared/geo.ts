@@ -81,6 +81,70 @@ export function autointersecta(contorno: Contorno) {
   return false
 }
 
+// Leaflet e GeoJSON às vezes fecham o anel repetindo o primeiro ponto; guardamos sem a repetição.
+// 7 casas decimais ≈ 1 cm: mais que isso é ruído do GPS e só aumenta o JSON
+export function normalizarContorno(pontos: Contorno): Contorno {
+  const [primeiro, ultimo] = [pontos[0], pontos.at(-1)]
+  const aberto = ultimo && primeiro[0] === ultimo[0] && primeiro[1] === ultimo[1] ? pontos.slice(0, -1) : pontos
+  return aberto.map(([lng, lat]) => [Number(lng.toFixed(7)), Number(lat.toFixed(7))])
+}
+
+// Distância de p ao segmento ab, num plano em metros
+function distanciaAoSegmento([px, py]: number[], [ax, ay]: number[], [bx, by]: number[]) {
+  const dx = bx - ax
+  const dy = by - ay
+  const comprimento2 = dx * dx + dy * dy
+  const t = comprimento2 === 0 ? 0 : Math.max(0, Math.min(1, ((px - ax) * dx + (py - ay) * dy) / comprimento2))
+  return Math.hypot(px - (ax + t * dx), py - (ay + t * dy))
+}
+
+// Douglas-Peucker: tira pontos que desviam menos que a tolerância da borda. Perímetros do CAR chegam
+// com milhares de vértices a poucos centímetros uns dos outros; 1 m de tolerância não muda a área
+export function simplificar(contorno: Contorno, toleranciaM: number): Contorno {
+  const n = contorno.length
+  if (n <= 4) return contorno
+
+  // Projeção local em metros: numa fazenda, tratar o recorte como plano basta
+  const kx = rad(1) * RAIO_TERRA_M * Math.cos(rad(centro(contorno)[1]))
+  const ky = rad(1) * RAIO_TERRA_M
+  const xy = contorno.map(([lng, lat]) => [lng * kx, lat * ky])
+
+  // Anel fechado: corta no ponto 0 e no mais distante dele e simplifica as duas metades
+  let oposto = 1
+  for (let i = 2; i < n; i++) {
+    if (Math.hypot(xy[i][0] - xy[0][0], xy[i][1] - xy[0][1]) > Math.hypot(xy[oposto][0] - xy[0][0], xy[oposto][1] - xy[0][1])) {
+      oposto = i
+    }
+  }
+
+  const manter = new Uint8Array(n)
+  manter[0] = manter[oposto] = 1
+  // Pilha em vez de recursão: um anel com 50 mil pontos estouraria a pilha de chamadas
+  const trechos: [number, number][] = [
+    [0, oposto],
+    [oposto, n],
+  ]
+  while (trechos.length) {
+    const [inicio, fim] = trechos.pop()!
+    let maior = 0
+    let indice = -1
+    for (let i = inicio + 1; i < fim; i++) {
+      const distancia = distanciaAoSegmento(xy[i], xy[inicio], xy[fim % n])
+      if (distancia > maior) {
+        maior = distancia
+        indice = i
+      }
+    }
+    if (indice !== -1 && maior > toleranciaM) {
+      manter[indice] = 1
+      trechos.push([inicio, indice], [indice, fim])
+    }
+  }
+
+  const simplificado = contorno.filter((_, i) => manter[i])
+  return simplificado.length >= 3 ? simplificado : contorno
+}
+
 const haFormatter = new Intl.NumberFormat("pt-BR", { maximumFractionDigits: 2 })
 const kmFormatter = new Intl.NumberFormat("pt-BR", { maximumFractionDigits: 2 })
 const mFormatter = new Intl.NumberFormat("pt-BR", { maximumFractionDigits: 0 })

@@ -6,7 +6,7 @@ import { Map as MapIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 // Leaflet depende de `window`: o mapa só existe no navegador e fica num bundle separado,
-// baixado apenas nas telas de talhões
+// baixado apenas nas telas que mostram mapa (talhões e limites da fazenda)
 function CarregandoMapa({ className }: { className?: string }) {
   return (
     <div
@@ -25,6 +25,11 @@ export const MapaVisao = dynamic(() => import("./MapaTalhoes").then((mod) => mod
 })
 
 export const MapaEditor = dynamic(() => import("./MapaTalhoes").then((mod) => mod.MapaEditor), {
+  ssr: false,
+  loading: () => <CarregandoMapa className="h-80" />,
+})
+
+export const MapaFazenda = dynamic(() => import("./MapaTalhoes").then((mod) => mod.MapaFazenda), {
   ssr: false,
   loading: () => <CarregandoMapa className="h-80" />,
 })

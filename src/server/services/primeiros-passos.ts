@@ -1,5 +1,6 @@
 import { contar as contarAnimais } from "@/server/services/animal"
 import { contar as contarAplicacoes } from "@/server/services/aplicacao"
+import { existe as existeLimite } from "@/server/services/limite-fazenda"
 import { contar as contarPesagens } from "@/server/services/pesagem"
 import { contar as contarPlantios } from "@/server/services/plantio"
 import type { Propriedade } from "@/server/services/propriedade"
@@ -20,12 +21,13 @@ export type Passo = {
 
 // O que já foi feito vem sempre dos dados (não de uma flag salva): a lista se marca sozinha e nunca fica desatualizada
 export async function listarPassos(propriedade: Propriedade): Promise<Passo[]> {
-  const [animais, pesagens, vacinas, talhoes, safras] = await Promise.all([
+  const [animais, pesagens, vacinas, talhoes, safras, limite] = await Promise.all([
     contarAnimais(propriedade.id),
     contarPesagens(propriedade.id),
     contarAplicacoes(propriedade.id),
     contarTalhoes(propriedade.id),
     contarPlantios(propriedade.id),
+    existeLimite(propriedade.id),
   ])
   const contagem = { animais, pesagens, vacinas, talhoes, safras }
 
@@ -77,11 +79,12 @@ export async function listarPassos(propriedade: Propriedade): Promise<Passo[]> {
     },
     {
       id: "fazenda",
-      titulo: "Informe a área total da fazenda",
-      descricao: "Usada para comparar a área produtiva com o tamanho da propriedade.",
-      href: "/painel/configuracoes",
-      acao: "Completar dados",
-      concluido: propriedade.areaTotalHa !== null,
+      titulo: "Localize sua fazenda",
+      descricao: "Importe o arquivo do CAR: o contorno aparece no mapa e a área total é calculada sozinha.",
+      href: "/painel/configuracoes#limites",
+      acao: "Importar CAR",
+      // Quem não tem o arquivo pode só digitar a área total: o passo não fica pendente para sempre
+      concluido: limite || propriedade.areaTotalHa !== null,
     },
   ]
 

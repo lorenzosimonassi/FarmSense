@@ -12,6 +12,7 @@ import { MapaVisao } from "@/components/talhoes/mapa"
 import { Button } from "@/components/ui/button"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { ApiError } from "@/lib/api/client"
+import { useLimiteFazenda } from "@/lib/api/hooks/propriedade"
 import { useExcluirTalhao, useTalhao } from "@/lib/api/hooks/talhoes"
 import { areaHa, centro, formatarDistancia, formatarHa, perimetroM } from "@/shared/geo"
 import type { Talhao } from "@/shared/schemas/talhao"
@@ -22,6 +23,7 @@ const pct = new Intl.NumberFormat("pt-BR", { style: "percent", maximumFractionDi
 
 export function TalhaoDetalhe({ inicial, areaFazendaHa }: { inicial: Talhao; areaFazendaHa: number | null }) {
   const { data: talhao = inicial } = useTalhao(inicial.id, inicial)
+  const { data: limite } = useLimiteFazenda()
   const [editando, setEditando] = useState(false)
 
   const contorno = talhao.contorno
@@ -64,6 +66,7 @@ export function TalhaoDetalhe({ inicial, areaFazendaHa }: { inicial: Talhao; are
             <MapaVisao
               talhoes={[talhao]}
               rotulos={false}
+              limite={limite?.contornos}
               className="h-[min(60dvh,32rem)] min-h-80 rounded-2xl border border-border shadow-xs"
             />
           ) : (

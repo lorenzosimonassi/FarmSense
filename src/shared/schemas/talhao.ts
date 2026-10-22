@@ -1,6 +1,6 @@
 import * as z from "zod"
 
-import { areaHa, autointersecta, type Contorno } from "@/shared/geo"
+import { areaHa, autointersecta, normalizarContorno, type Contorno } from "@/shared/geo"
 import { decimal, textoOpcional } from "@/shared/schemas/campos"
 import type { PlantioResumo } from "@/shared/schemas/plantio"
 
@@ -21,7 +21,7 @@ export type Talhao = {
 // Na lista, o talhão vem com o que está plantado nele agora (ou o próximo plantio planejado)
 export type TalhaoNaLista = Talhao & { plantioAtual: PlantioResumo | null }
 
-const pontoSchema = z.tuple([
+export const pontoSchema = z.tuple([
   z.number().min(-180).max(180),
   z.number().min(-90).max(90),
 ])
@@ -30,13 +30,7 @@ export const contornoSchema = z
   .array(pontoSchema, { error: "Contorno inválido." })
   .min(3, { error: "Marque pelo menos 3 pontos no mapa." })
   .max(PONTOS_MAXIMOS, { error: `Use no máximo ${PONTOS_MAXIMOS} pontos no contorno.` })
-  // Leaflet e GeoJSON às vezes fecham o anel repetindo o primeiro ponto; guardamos sem a repetição
-  .transform((pontos) => {
-    const [primeiro, ultimo] = [pontos[0], pontos.at(-1)!]
-    const aberto = primeiro[0] === ultimo[0] && primeiro[1] === ultimo[1] ? pontos.slice(0, -1) : pontos
-    // 7 casas decimais ≈ 1 cm: mais que isso é ruído do GPS e só aumenta o JSON
-    return aberto.map(([lng, lat]) => [Number(lng.toFixed(7)), Number(lat.toFixed(7))] as [number, number])
-  })
+  .transform(normalizarContorno)
   .superRefine((pontos, ctx) => {
     if (pontos.length < 3) {
       ctx.addIssue({ code: "custom", message: "Marque pelo menos 3 pontos diferentes no mapa." })

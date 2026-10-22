@@ -97,6 +97,7 @@ function BaseMapa({
   overlay,
   onMapa,
   interativo = true,
+  rotuloEnquadrar = "Enquadrar talhões",
 }: {
   alvoInicial: Enquadramento | null
   // Alvo do botão "enquadrar" (padrão: o inicial)
@@ -106,6 +107,7 @@ function BaseMapa({
   overlay?: React.ReactNode
   onMapa?: (map: L.Map) => void
   interativo?: boolean
+  rotuloEnquadrar?: string
 }) {
   const [map, setMap] = useState<L.Map | null>(null)
   const [camada, setCamada] = useState<Camada>("satelite")
@@ -180,7 +182,7 @@ function BaseMapa({
           {localizando ? <Crosshair className="animate-pulse" /> : <LocateFixed />}
         </BotaoMapa>
         {(enquadrarDeNovo ?? alvoInicial) && (
-          <BotaoMapa rotulo="Enquadrar talhões" onClick={() => map && enquadrar(map, enquadrarDeNovo ?? alvoInicial, true)}>
+          <BotaoMapa rotulo={rotuloEnquadrar} onClick={() => map && enquadrar(map, enquadrarDeNovo ?? alvoInicial, true)}>
             <Maximize />
           </BotaoMapa>
         )}
@@ -216,6 +218,9 @@ const ESTILO = {
   erro: { color: ERRO, weight: 3, opacity: 1, fillColor: ERRO, fillOpacity: 0.25 },
   linha: { color: BRANCO, weight: 3, opacity: 1 },
   guia: { color: BRANCO, weight: 2, opacity: 0.8, dashArray: "6 6", interactive: false },
+  // Perímetro da fazenda: referência de fundo nos mapas de talhões, destaque na tela de limites
+  fazenda: { color: BRANCO, weight: 2, opacity: 0.9, dashArray: "8 6", fill: false, interactive: false },
+  fazendaDestaque: { color: BRANCO, weight: 2.5, opacity: 1, fillColor: BRANCO, fillOpacity: 0.12, interactive: false },
 } satisfies Record<string, L.PathOptions>
 
 export function MapaVisao({
@@ -224,6 +229,7 @@ export function MapaVisao({
   onDestaque,
   onSelecionar,
   rotulos = true,
+  limite = null,
   className,
 }: {
   talhoes: TalhaoNoMapa[]
@@ -231,6 +237,8 @@ export function MapaVisao({
   onDestaque?: (id: string | null) => void
   onSelecionar?: (id: string) => void
   rotulos?: boolean
+  // Perímetro da fazenda: desenhado por baixo e usado para enquadrar enquanto não há talhões no mapa
+  limite?: Contorno[] | null
   className?: string
 }) {
   const mapeados = talhoes.filter((talhao): talhao is TalhaoNoMapa & { contorno: Contorno } => talhao.contorno !== null)
@@ -238,14 +246,15 @@ export function MapaVisao({
   // Recria o alvo só quando os contornos mudam, não a cada destaque
   const chave = JSON.stringify(contornos)
   const alvo = useMemo<Enquadramento | null>(
-    () => (contornos.length ? { contornos } : null),
+    () => (contornos.length ? { contornos } : limite?.length ? { contornos: limite } : null),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [chave]
+    [chave, limite]
   )
 
   return (
     <BaseMapa alvoInicial={alvo} className={className}>
       <RefazerEnquadramento alvo={alvo} />
+      <PerimetroFazenda limite={limite} />
       {mapeados.map((talhao) => (
         <Polygon
           key={talhao.id}
@@ -280,6 +289,27 @@ function RefazerEnquadramento({ alvo }: { alvo: Enquadramento | null }) {
     enquadrar(map, alvo, true)
   }, [map, alvo])
   return null
+}
+
+function PerimetroFazenda({ limite }: { limite: Contorno[] | null }) {
+  if (!limite?.length) return null
+  return <Polygon positions={limite.map((contorno) => contorno.map(paraLatLng))} pathOptions={ESTILO.fazenda} />
+}
+
+/* ---------- Limites da fazenda: o perímetro importado do CAR ---------- */
+
+export function MapaFazenda({ contornos, className }: { contornos: Contorno[]; className?: string }) {
+  const chave = JSON.stringify(contornos)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const alvo = useMemo<Enquadramento>(() => ({ contornos }), [chave])
+
+  return (
+    <BaseMapa alvoInicial={alvo} rotuloEnquadrar="Enquadrar fazenda" className={className}>
+      {/* Outro arquivo importado no lugar: enquadra o contorno novo */}
+      <RefazerEnquadramento alvo={alvo} />
+      <Polygon positions={contornos.map((contorno) => contorno.map(paraLatLng))} pathOptions={ESTILO.fazendaDestaque} />
+    </BaseMapa>
+  )
 }
 
 /* ---------- Editor: desenhar e ajustar o contorno de um talhão ---------- */
@@ -322,6 +352,7 @@ export function MapaEditor({
   onChange,
   outros = [],
   centroFazenda,
+  limite = null,
   className,
 }: {
   valor: Contorno | null
@@ -329,6 +360,7 @@ export function MapaEditor({
   // Demais talhões da fazenda, como referência para desenhar ao lado deles
   outros?: TalhaoNoMapa[]
   centroFazenda?: { lat: number; lng: number } | null
+  limite?: Contorno[] | null
   className?: string
 }) {
   const [pontos, setPontos] = useState<Ponto[]>(valor ?? [])
@@ -341,11 +373,12 @@ export function MapaEditor({
   const alvo = useMemo<Enquadramento | null>(() => {
     if (valor) return { contornos: [valor] }
     if (contornosOutros.length) return { contornos: contornosOutros }
+    if (limite?.length) return { contornos: limite }
     if (centroFazenda) return { centro: centroFazenda }
     return null
     // O enquadramento inicial só depende do que já existia ao abrir o editor
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [centroFazenda, outros.length])
+  }, [centroFazenda, limite, outros.length])
 
   function emitir(proximos: Ponto[], proximoModo: Modo) {
     setPontos(proximos)
@@ -468,6 +501,7 @@ export function MapaEditor({
           </>
         }
       >
+        <PerimetroFazenda limite={limite} />
         <CliquesDoMapa ativo={desenhando} onPonto={(ponto) => emitir([...pontos, ponto], modo)} onCursor={setCursor} />
 
         {outros.map(

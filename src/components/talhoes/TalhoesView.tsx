@@ -13,6 +13,7 @@ import { ContornoMiniatura } from "@/components/talhoes/ContornoMiniatura"
 import { TalhaoForm } from "@/components/talhoes/TalhaoForm"
 import { MapaVisao } from "@/components/talhoes/mapa"
 import { Button } from "@/components/ui/button"
+import { useLimiteFazenda } from "@/lib/api/hooks/propriedade"
 import { useTalhoes } from "@/lib/api/hooks/talhoes"
 import { cn } from "@/lib/utils"
 import { formatarHa } from "@/shared/geo"
@@ -36,6 +37,7 @@ export function TalhoesView({ abrirNovo, areaFazendaHa }: { abrirNovo: boolean; 
   const [busca, setBusca] = useState("")
   const [destaque, setDestaque] = useState<string | null>(null)
   const lista = useTalhoes()
+  const { data: limite } = useLimiteFazenda()
 
   const talhoes = lista.data?.items ?? []
   const total = lista.data?.total
@@ -117,6 +119,7 @@ export function TalhoesView({ abrirNovo, areaFazendaHa }: { abrirNovo: boolean; 
                   destaque={destaque}
                   onDestaque={setDestaque}
                   onSelecionar={(id) => router.push(`/painel/talhoes/${id}`)}
+                  limite={limite?.contornos}
                   className="h-[min(65dvh,36rem)] min-h-80 rounded-2xl border border-border shadow-xs"
                 />
               </section>
