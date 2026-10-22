@@ -1,12 +1,13 @@
 import { getContext } from "@/server/http/context"
 import { handleError } from "@/server/http/responses"
-import { notificacoes } from "@/server/services/visao-geral"
+import { listar, sincronizar } from "@/server/services/notificacao"
 
-// Calculadas na hora a partir dos dados (spec 4.5): sem estado de "lida"
+// Sincroniza antes de listar: o aviso do dia aparece no sino mesmo antes da rodada do agendador
 export async function GET(request: Request) {
   try {
     const { propriedade } = await getContext(request)
-    return Response.json(await notificacoes(propriedade))
+    await sincronizar(propriedade)
+    return Response.json(await listar(propriedade.id))
   } catch (error) {
     return handleError(error)
   }

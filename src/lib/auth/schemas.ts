@@ -38,6 +38,21 @@ export const resetPasswordSchema = z
   })
   .refine(passwordsMatch.check, passwordsMatch.params)
 
+// Meu perfil
+export const nomeSchema = z.object({
+  name: z.string().trim().min(2, { error: "Informe seu nome completo." }).max(80, { error: "Use no máximo 80 caracteres." }),
+})
+
+export const trocarEmailSchema = z.object({ email: emailSchema })
+
+export const trocarSenhaSchema = z
+  .object({
+    currentPassword: z.string().min(1, { error: "Informe sua senha atual." }),
+    password: passwordSchema,
+    confirmPassword: z.string(),
+  })
+  .refine(passwordsMatch.check, passwordsMatch.params)
+
 export type FieldErrors<T> = Partial<Record<keyof T, string>>
 
 export function fieldErrors<T>(error: z.ZodError<T>): FieldErrors<T> {

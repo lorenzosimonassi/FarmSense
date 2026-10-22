@@ -155,8 +155,3 @@ export async function visaoGeral(propriedade: Propriedade): Promise<VisaoGeral> 
   const dados = await montar(propriedade)
   return { ...dados, atencao: dados.atencao.slice(0, MAX_ATENCAO) }
 }
-
-// O sino do topo: a mesma lista de "atenção" da visão geral, inteira
-export async function notificacoes(propriedade: Propriedade) {
-  return (await montar(propriedade)).atencao
-}

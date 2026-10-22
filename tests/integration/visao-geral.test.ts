@@ -1,6 +1,5 @@
 import { afterAll, beforeEach, describe, expect, it } from "vitest"
 
-import { GET as GET_NOTIFICACOES } from "@/app/api/notificacoes/route"
 import { GET } from "@/app/api/visao-geral/route"
 import { prisma } from "@/lib/db"
 import { redis } from "@/lib/redis"
@@ -78,9 +77,6 @@ describe("/api/visao-geral", () => {
     ])
     // Próximos 14 dias: plantio da safrinha e a previsão da soja (o reforço vencendo também)
     expect(v.proximos.map((evento: { tipo: string }) => evento.tipo)).toEqual(["PROXIMA_DOSE", "PREVISAO_COLHEITA", "PLANTIO"])
-
-    const sino = await (await GET_NOTIFICACOES(apiRequest("/api/notificacoes", "GET", cookie))).json()
-    expect(sino).toHaveLength(4)
   })
 
   it("fazenda só de lavoura não calcula a pecuária", async () => {

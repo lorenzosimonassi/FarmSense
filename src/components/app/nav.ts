@@ -8,6 +8,7 @@ import {
   Settings,
   Sprout,
   Syringe,
+  UserRound,
   type LucideIcon,
 } from "lucide-react"
 
@@ -54,7 +55,10 @@ export function navGroupsFor(atividades: Atividade[]) {
 
 export const NAV_FOOTER: NavItem[] = [{ label: "Configurações", href: "/painel/configuracoes", icon: Settings }]
 
-const ALL_ITEMS = [...NAV_GROUPS.flatMap((group) => group.items), ...NAV_FOOTER]
+// Páginas fora do menu lateral (abertas pelo menu do usuário), só para o título no topo
+const OUTRAS_PAGINAS: NavItem[] = [{ label: "Meu perfil", href: "/painel/perfil", icon: UserRound }]
+
+const ALL_ITEMS = [...NAV_GROUPS.flatMap((group) => group.items), ...NAV_FOOTER, ...OUTRAS_PAGINAS]
 
 // Subrotas contam como a seção (ex.: /painel/rebanho/123 → Rebanho); a visão geral só vale na raiz
 export function isNavActive(pathname: string, href: string) {

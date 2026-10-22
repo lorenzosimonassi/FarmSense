@@ -14,9 +14,8 @@ type LayoutInput = {
   footer: string
 }
 
-function emailLayout({ title, intro, buttonLabel, url, footer }: LayoutInput) {
-  const safeUrl = escapeHtml(url)
-
+// Cabeçalho, cartão e rodapé comuns a todos os e-mails
+function moldura(conteudo: string, footer: string) {
   return `<!doctype html>
 <html lang="pt-BR">
   <body style="margin:0;padding:0;background:#f7f8f5;font-family:'Plus Jakarta Sans',Arial,sans-serif;color:#14170f;">
@@ -30,17 +29,7 @@ function emailLayout({ title, intro, buttonLabel, url, footer }: LayoutInput) {
               </td>
             </tr>
             <tr>
-              <td style="padding:32px;">
-                <h1 style="margin:0 0 12px;font-size:22px;line-height:1.3;">${title}</h1>
-                <p style="margin:0 0 24px;font-size:15px;line-height:1.6;color:#565d51;">${intro}</p>
-                <a href="${safeUrl}" style="display:inline-block;background:#173226;color:#f7f8f5;text-decoration:none;font-weight:600;font-size:15px;padding:14px 28px;border-radius:999px;">
-                  ${buttonLabel}
-                </a>
-                <p style="margin:24px 0 0;font-size:13px;line-height:1.6;color:#565d51;">
-                  O link expira em 1 hora. Se o botão não funcionar, copie e cole este endereço no navegador:<br />
-                  <a href="${safeUrl}" style="color:#2f5642;word-break:break-all;">${safeUrl}</a>
-                </p>
-              </td>
+              <td style="padding:32px;">${conteudo}</td>
             </tr>
             <tr>
               <td style="padding:20px 32px;border-top:1px solid #e1e4d6;font-size:12px;color:#8a8f7c;">${footer}</td>
@@ -51,6 +40,29 @@ function emailLayout({ title, intro, buttonLabel, url, footer }: LayoutInput) {
     </table>
   </body>
 </html>`
+}
+
+function botao(label: string, url: string) {
+  return `<a href="${escapeHtml(url)}" style="display:inline-block;background:#173226;color:#f7f8f5;text-decoration:none;font-weight:600;font-size:15px;padding:14px 28px;border-radius:999px;">
+                  ${label}
+                </a>`
+}
+
+function emailLayout({ title, intro, buttonLabel, url, footer }: LayoutInput) {
+  const safeUrl = escapeHtml(url)
+
+  return moldura(
+    `
+                <h1 style="margin:0 0 12px;font-size:22px;line-height:1.3;">${title}</h1>
+                <p style="margin:0 0 24px;font-size:15px;line-height:1.6;color:#565d51;">${intro}</p>
+                ${botao(buttonLabel, url)}
+                <p style="margin:24px 0 0;font-size:13px;line-height:1.6;color:#565d51;">
+                  O link expira em 1 hora. Se o botão não funcionar, copie e cole este endereço no navegador:<br />
+                  <a href="${safeUrl}" style="color:#2f5642;word-break:break-all;">${safeUrl}</a>
+                </p>
+              `,
+    footer
+  )
 }
 
 function firstName(name: string) {
@@ -83,4 +95,68 @@ export function resetPasswordTemplate({ name, url }: { name: string; url: string
   const text = `Olá, ${name}!\n\nPara redefinir sua senha no FarmSense, acesse o link abaixo (expira em 1 hora):\n${url}\n\nSe você não pediu isso, ignore este e-mail.`
 
   return { subject: "Redefina sua senha no FarmSense", html, text }
+}
+
+export function changeEmailTemplate({ name, url }: { name: string; url: string }) {
+  const html = emailLayout({
+    title: "Confirme seu novo e-mail",
+    intro: `Olá, ${firstName(name)}! Você pediu para usar este endereço na sua conta do FarmSense. Clique no botão abaixo para confirmar a troca.`,
+    buttonLabel: "Confirmar novo e-mail",
+    url,
+    footer: "Se você não pediu essa troca, ignore este e-mail. Sua conta continua com o endereço atual.",
+  })
+
+  const text = `Olá, ${name}!\n\nPara confirmar a troca de e-mail no FarmSense, acesse o link abaixo (expira em 1 hora):\n${url}\n\nSe você não pediu isso, ignore este e-mail.`
+
+  return { subject: "Confirme seu novo e-mail no FarmSense", html, text }
+}
+
+type AvisoEmail = { titulo: string; detalhe: string; url: string; gravidade: "critico" | "alerta" | "info" }
+
+const COR_GRAVIDADE = { critico: "#c1402b", alerta: "#d08a12", info: "#2f6f9f" }
+
+// Resumo dos avisos de prazo que chegaram desde o último envio
+export function avisosTemplate({
+  name,
+  fazenda,
+  avisos,
+  painelUrl,
+  perfilUrl,
+}: {
+  name: string
+  fazenda: string
+  avisos: AvisoEmail[]
+  painelUrl: string
+  perfilUrl: string
+}) {
+  const lista = avisos
+    .map(
+      (aviso) => `
+                <tr>
+                  <td style="padding:14px 0;border-top:1px solid #eef0e8;">
+                    <span style="display:inline-block;width:8px;height:8px;border-radius:999px;background:${COR_GRAVIDADE[aviso.gravidade]};margin-right:8px;"></span>
+                    <a href="${escapeHtml(aviso.url)}" style="font-size:15px;font-weight:600;color:#14170f;text-decoration:none;">${escapeHtml(aviso.titulo)}</a>
+                    <div style="margin:4px 0 0 16px;font-size:13px;color:#565d51;">${escapeHtml(aviso.detalhe)}</div>
+                  </td>
+                </tr>`
+    )
+    .join("")
+
+  const titulo = avisos.length === 1 ? "Um prazo pede sua atenção" : `${avisos.length} prazos pedem sua atenção`
+  const html = moldura(
+    `
+                <h1 style="margin:0 0 12px;font-size:22px;line-height:1.3;">${titulo}</h1>
+                <p style="margin:0 0 16px;font-size:15px;line-height:1.6;color:#565d51;">Olá, ${firstName(name)}! Estes são os avisos da ${escapeHtml(fazenda)}:</p>
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 24px;">${lista}
+                </table>
+                ${botao("Abrir o FarmSense", painelUrl)}
+              `,
+    `Você recebe estes avisos porque eles estão ligados no seu perfil. <a href="${escapeHtml(perfilUrl)}" style="color:#2f5642;">Desligar os avisos por e-mail</a>.`
+  )
+
+  const itens = avisos.map((aviso) => `- ${aviso.titulo}\n  ${aviso.detalhe}\n  ${aviso.url}`).join("\n\n")
+  const text = `Olá, ${name}!\n\n${titulo} na ${fazenda}:\n\n${itens}\n\nPara desligar os avisos por e-mail: ${perfilUrl}`
+
+  const subject = avisos.length === 1 ? avisos[0].titulo : `${titulo} na ${fazenda}`
+  return { subject, html, text }
 }

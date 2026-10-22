@@ -5,6 +5,7 @@ import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import {
   Bell,
+  CheckCheck,
   ChevronRight,
   CircleAlert,
   CircleCheck,
@@ -32,7 +33,7 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { authClient } from "@/lib/auth/client"
 import { cn } from "@/lib/utils"
-import type { ItemAtencao } from "@/shared/visao-geral"
+import type { ListaNotificacoes } from "@/shared/notificacoes"
 
 export type ShellUser = { name: string; email: string }
 
@@ -102,23 +103,64 @@ const TONES = {
   critico: { icon: CircleAlert, className: "bg-status-critical/10 text-status-critical" },
 }
 
-// Calculadas na hora a partir dos dados (a mesma lista do "Precisa de atenção"): sem estado de lida.
-// Recarrega ao trocar de página e ao abrir, para refletir o que acabou de ser registrado.
+const tempoFormatter = new Intl.RelativeTimeFormat("pt-BR", { numeric: "auto" })
+
+function haQuanto(iso: string) {
+  const minutos = Math.round((new Date(iso).getTime() - Date.now()) / 60_000)
+  if (minutos > -1) return "agora"
+  if (minutos > -60) return tempoFormatter.format(minutos, "minute")
+  if (minutos > -60 * 24) return tempoFormatter.format(Math.round(minutos / 60), "hour")
+  return tempoFormatter.format(Math.round(minutos / (60 * 24)), "day")
+}
+
+const ATUALIZAR_A_CADA_MS = 5 * 60 * 1000
+
+function marcarLidas(ids?: string[]) {
+  return fetch("/api/notificacoes/lidas", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(ids ? { ids } : {}),
+  }).catch(() => {})
+}
+
+// Avisos de prazo (antes, no dia e depois de atrasar), gravados no servidor. Recarrega ao trocar de página,
+// ao abrir, ao voltar para a aba e a cada 5 minutos, para o aviso do dia aparecer sem recarregar
 function Notifications() {
   const pathname = usePathname()
-  const [itens, setItens] = useState<ItemAtencao[] | null>(null)
+  const [lista, setLista] = useState<ListaNotificacoes | null>(null)
   const [aberto, setAberto] = useState(false)
 
   const carregar = useCallback(() => {
     fetch("/api/notificacoes")
       .then((response) => (response.ok ? response.json() : null))
-      .then((dados: ItemAtencao[] | null) => dados && setItens(dados))
+      .then((dados: ListaNotificacoes | null) => dados && setLista(dados))
       .catch(() => {})
   }, [])
 
   useEffect(carregar, [carregar, pathname])
 
-  const urgentes = (itens ?? []).filter((n) => n.gravidade !== "info").length
+  useEffect(() => {
+    const aoVoltar = () => document.visibilityState === "visible" && carregar()
+    const timer = setInterval(aoVoltar, ATUALIZAR_A_CADA_MS)
+    document.addEventListener("visibilitychange", aoVoltar)
+    return () => {
+      clearInterval(timer)
+      document.removeEventListener("visibilitychange", aoVoltar)
+    }
+  }, [carregar])
+
+  function ler(ids?: string[]) {
+    setLista((atual) =>
+      atual && {
+        itens: atual.itens.map((n) => (!ids || ids.includes(n.id) ? { ...n, lida: true } : n)),
+        naoLidas: ids ? atual.itens.filter((n) => !n.lida && !ids.includes(n.id)).length : 0,
+      }
+    )
+    void marcarLidas(ids)
+  }
+
+  const itens = lista?.itens ?? null
+  const naoLidas = lista?.naoLidas ?? 0
 
   return (
     <Popover
@@ -133,23 +175,28 @@ function Notifications() {
           variant="ghost"
           size="icon"
           className="relative shrink-0"
-          aria-label={itens?.length ? `Notificações (${itens.length})` : "Notificações"}
+          aria-label={naoLidas ? `Notificações (${naoLidas} não lidas)` : "Notificações"}
         >
           <Bell />
-          {urgentes > 0 && (
-            <span className="absolute top-1 right-1 flex size-4.5 items-center justify-center rounded-full bg-destructive text-[10px] font-bold text-destructive-foreground ring-2 ring-background">
-              {urgentes}
+          {naoLidas > 0 && (
+            <span className="absolute top-1 right-1 flex h-4.5 min-w-4.5 items-center justify-center rounded-full bg-destructive px-1 text-[10px] font-bold text-destructive-foreground ring-2 ring-background">
+              {naoLidas > 9 ? "9+" : naoLidas}
             </span>
           )}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-96 max-w-[calc(100vw-2rem)] p-0">
-        <div className="flex items-center justify-between border-b border-border px-4 py-3">
+        <div className="flex items-center justify-between gap-3 border-b border-border px-4 py-3">
           <p className="text-sm font-semibold">Notificações</p>
-          {itens && itens.length > 0 && (
-            <span className="rounded-full bg-accent px-2 py-0.5 text-xs font-semibold text-primary">
-              {itens.length === 1 ? "1 aviso" : `${itens.length} avisos`}
-            </span>
+          {naoLidas > 0 && (
+            <button
+              type="button"
+              onClick={() => ler()}
+              className="flex cursor-pointer items-center gap-1 text-xs font-medium text-primary outline-none hover:underline focus-visible:underline"
+            >
+              <CheckCheck className="size-3.5" />
+              Marcar todas como lidas
+            </button>
           )}
         </div>
         {itens === null ? (
@@ -158,7 +205,9 @@ function Notifications() {
           <div className="flex flex-col items-center gap-2 px-4 py-8 text-center">
             <CircleCheck className="size-6 text-status-good" />
             <p className="text-sm font-medium">Tudo em dia</p>
-            <p className="text-xs text-muted-foreground">Nenhum reforço, colheita ou animal pedindo atenção.</p>
+            <p className="text-xs text-muted-foreground">
+              Avisamos alguns dias antes de reforços, colheitas e plantios, e de novo no dia.
+            </p>
           </div>
         ) : (
           <ul className="max-h-[min(24rem,60dvh)] overflow-y-auto p-1.5">
@@ -166,21 +215,47 @@ function Notifications() {
               const tone = TONES[n.gravidade]
               return (
                 <li key={n.id}>
-                  <Link href={n.href} onClick={() => setAberto(false)} className="flex gap-3 rounded-lg p-2.5 outline-none hover:bg-accent/60 focus-visible:bg-accent/60">
+                  <Link
+                    href={n.href}
+                    onClick={() => {
+                      setAberto(false)
+                      if (!n.lida) ler([n.id])
+                    }}
+                    className={cn(
+                      "relative flex gap-3 rounded-lg p-2.5 outline-none hover:bg-accent/60 focus-visible:bg-accent/60",
+                      n.lida && "opacity-65"
+                    )}
+                  >
                     <span className={cn("flex size-8 shrink-0 items-center justify-center rounded-full", tone.className)}>
                       <tone.icon className="size-4" />
                     </span>
-                    <div className="min-w-0 flex-1">
-                      <p className="text-sm leading-snug font-medium">{n.titulo}</p>
+                    <div className="min-w-0 flex-1 pr-3">
+                      <p className={cn("text-sm leading-snug", n.lida ? "font-medium" : "font-semibold")}>{n.titulo}</p>
                       <p className="mt-0.5 text-xs text-muted-foreground">{n.detalhe}</p>
-                      <p className="mt-1 text-[11px] font-medium text-primary">{n.acao}</p>
+                      <p className="mt-1 text-[11px] text-muted-foreground">
+                        <span className="font-medium text-primary">{n.acao}</span> · {haQuanto(n.criadaEm)}
+                      </p>
                     </div>
+                    {!n.lida && (
+                      <span className="absolute top-3.5 right-2.5 size-2 rounded-full bg-primary">
+                        <span className="sr-only">Não lida</span>
+                      </span>
+                    )}
                   </Link>
                 </li>
               )
             })}
           </ul>
         )}
+        <div className="border-t border-border px-4 py-2.5">
+          <Link
+            href="/painel/perfil#notificacoes"
+            onClick={() => setAberto(false)}
+            className="text-xs font-medium text-muted-foreground outline-none hover:text-foreground hover:underline focus-visible:underline"
+          >
+            Avisos por e-mail
+          </Link>
+        </div>
       </PopoverContent>
     </Popover>
   )
@@ -223,7 +298,7 @@ function UserMenu({ user }: { user: ShellUser }) {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <Link href="/painel/configuracoes">
+          <Link href="/painel/perfil">
             <UserRound />
             Meu perfil
           </Link>

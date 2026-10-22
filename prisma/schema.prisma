@@ -10,16 +10,18 @@ datasource db {
 // Modelos usados pelo Better Auth (https://www.better-auth.com/docs/concepts/database)
 
 model User {
-  id            String       @id
-  name          String
-  email         String       @unique
-  emailVerified Boolean      @default(false)
-  image         String?
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
-  sessions      Session[]
-  accounts      Account[]
-  propriedade   Propriedade?
+  id                String       @id
+  name              String
+  email             String       @unique
+  emailVerified     Boolean      @default(false)
+  image             String?
+  // Avisos de prazos (reforços, colheitas, plantios) também por e-mail
+  notificarPorEmail Boolean      @default(true)
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+  sessions          Session[]
+  accounts          Account[]
+  propriedade       Propriedade?
 
   @@map("user")
 }
@@ -85,20 +87,21 @@ enum TipoRebanho {
 }
 
 model Propriedade {
-  id          String         @id @default(cuid())
-  userId      String         @unique
-  user        User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  nome        String
-  municipio   String
-  uf          String         @db.Char(2)
-  areaTotalHa Decimal?       @db.Decimal(10, 2)
-  atividades  Atividade[]
-  tipoRebanho TipoRebanho?
-  createdAt   DateTime       @default(now())
-  updatedAt   DateTime       @updatedAt
-  animais     Animal[]
-  talhoes     Talhao[]
-  limite      LimiteFazenda?
+  id           String         @id @default(cuid())
+  userId       String         @unique
+  user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  nome         String
+  municipio    String
+  uf           String         @db.Char(2)
+  areaTotalHa  Decimal?       @db.Decimal(10, 2)
+  atividades   Atividade[]
+  tipoRebanho  TipoRebanho?
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  animais      Animal[]
+  talhoes      Talhao[]
+  limite       LimiteFazenda?
+  notificacoes Notificacao[]
 
   @@map("propriedade")
 }
@@ -237,4 +240,30 @@ model Plantio {
 
   @@index([talhaoId, dataPlantio])
   @@map("plantio")
+}
+
+// Aviso de prazo gravado quando chega a hora (alguns dias antes, no dia, depois de atrasar). Fica gravado para
+// ter "lida" e para o e-mail sair uma vez só; o "Precisa de atenção" da visão geral continua calculado na hora
+model Notificacao {
+  id            String      @id @default(cuid())
+  propriedadeId String
+  propriedade   Propriedade @relation(fields: [propriedadeId], references: [id], onDelete: Cascade)
+  // O que avisa e em que etapa (ex.: "reforco:aftosa:2026-10-25:antes"): cada etapa gera um aviso só
+  chave         String
+  gravidade     String
+  titulo        String
+  detalhe       String
+  href          String
+  acao          String
+  // Dia em que a tarefa precisa ser feita
+  data          DateTime    @db.Date
+  lidaEm        DateTime?
+  // Ainda não passou pelo envio de e-mail (enviada, ou pulada por preferência ou por já ter sido lida)
+  emailPendente Boolean     @default(true)
+  createdAt     DateTime    @default(now())
+
+  @@unique([propriedadeId, chave])
+  @@index([propriedadeId, createdAt])
+  @@index([emailPendente])
+  @@map("notificacao")
 }

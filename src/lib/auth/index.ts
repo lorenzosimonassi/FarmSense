@@ -4,7 +4,7 @@ import { APIError } from "better-auth/api"
 
 import { prisma } from "@/lib/db"
 import { sendEmail } from "@/lib/email"
-import { resetPasswordTemplate, verifyEmailTemplate } from "@/lib/email/templates"
+import { changeEmailTemplate, resetPasswordTemplate, verifyEmailTemplate } from "@/lib/email/templates"
 import { redis } from "@/lib/redis"
 import { criar as criarPropriedade } from "@/server/services/propriedade"
 import { propriedadeSchema } from "@/shared/schemas/propriedade"
@@ -87,8 +87,16 @@ export const auth = betterAuth({
     autoSignInAfterVerification: true,
     expiresIn: 60 * 60,
     sendVerificationEmail: async ({ user, url }) => {
-      deliverAuthEmail(user.email, url, verifyEmailTemplate({ name: user.name, url }))
+      // Na troca de e-mail (Meu perfil), o link vai para o endereço novo, que ainda não está salvo
+      const atual = await prisma.user.findUnique({ where: { id: user.id }, select: { email: true } })
+      const template = atual && atual.email !== user.email ? changeEmailTemplate : verifyEmailTemplate
+      deliverAuthEmail(user.email, url, template({ name: user.name, url }))
     },
+  },
+
+  user: {
+    // O e-mail só muda depois que o novo endereço é confirmado pelo link
+    changeEmail: { enabled: true },
   },
 
   databaseHooks: {

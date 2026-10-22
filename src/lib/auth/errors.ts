@@ -8,6 +8,7 @@ const MESSAGES: Record<string, string> = {
   INVALID_EMAIL: "Informe um e-mail válido.",
   INVALID_TOKEN: "Este link é inválido ou já expirou. Peça um novo.",
   PROPRIEDADE_INVALIDA: "Confira os dados da fazenda.",
+  INVALID_PASSWORD: "Senha atual incorreta.",
 }
 
 export function authErrorMessage(error: { code?: string; status?: number } | null) {
