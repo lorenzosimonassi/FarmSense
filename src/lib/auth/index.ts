@@ -1,6 +1,7 @@
 import { betterAuth } from "better-auth"
 import { prismaAdapter } from "better-auth/adapters/prisma"
 import { APIError } from "better-auth/api"
+import { after } from "next/server"
 
 import { prisma } from "@/lib/db"
 import { sendEmail } from "@/lib/email"
@@ -36,10 +37,13 @@ function deliverAuthEmail(
     console.info(`[auth] ${subject} → ${to}: ${url}`)
   }
 
-  // Não bloqueia a resposta esperando o SMTP (e evita revelar pelo tempo se o e-mail existe)
-  void sendEmail({ to, subject, html, text }).catch((error) => {
-    console.error(`[auth] Falha ao enviar "${subject}" para ${to}`, error)
-  })
+  // Não bloqueia a resposta esperando o SMTP (e evita revelar pelo tempo se o e-mail existe).
+  // `after` mantém a função serverless viva até o envio terminar; um `void` solto seria congelado
+  after(() =>
+    sendEmail({ to, subject, html, text }).catch((error) => {
+      console.error(`[auth] Falha ao enviar "${subject}" para ${to}`, error)
+    })
+  )
 }
 
 export const auth = betterAuth({
