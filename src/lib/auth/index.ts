@@ -1,6 +1,6 @@
 import { betterAuth } from "better-auth"
 import { prismaAdapter } from "better-auth/adapters/prisma"
-import { APIError } from "better-auth/api"
+import { APIError, createAuthMiddleware, getSessionFromCtx } from "better-auth/api"
 import { after } from "next/server"
 
 import { prisma } from "@/lib/db"
@@ -11,6 +11,7 @@ import { criar as criarPropriedade } from "@/server/services/propriedade"
 import { propriedadeSchema } from "@/shared/schemas/propriedade"
 
 const SIGN_UP_EMAIL_PATH = "/sign-up/email"
+const DELETE_USER_PATH = "/delete-user"
 
 // O cadastro por e-mail envia a fazenda junto, em `propriedade` (campo ignorado pelo Better Auth)
 function propriedadeDoCadastro(context: { path?: string; body?: unknown } | null) {
@@ -101,6 +102,25 @@ export const auth = betterAuth({
   user: {
     // O e-mail só muda depois que o novo endereço é confirmado pelo link
     changeEmail: { enabled: true },
+    // Fazenda, rebanho, talhões e o resto saem junto pelo onDelete: Cascade do schema
+    deleteUser: { enabled: true },
+  },
+
+  hooks: {
+    // O Better Auth aceita excluir sem senha se a sessão for recente; quem tem senha precisa digitá-la.
+    // Conta só com Google não tem senha e depende da sessão recente (SESSION_EXPIRED pede para entrar de novo)
+    before: createAuthMiddleware(async (ctx) => {
+      if (ctx.path !== DELETE_USER_PATH || (ctx.body as { password?: string } | undefined)?.password) return
+      const session = await getSessionFromCtx(ctx)
+      if (!session) return
+      const credencial = await prisma.account.findFirst({
+        where: { userId: session.user.id, providerId: "credential" },
+        select: { id: true },
+      })
+      if (credencial) {
+        throw new APIError("BAD_REQUEST", { code: "INVALID_PASSWORD", message: "Informe sua senha." })
+      }
+    }),
   },
 
   databaseHooks: {

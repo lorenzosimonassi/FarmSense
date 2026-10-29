@@ -2,12 +2,24 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { BellRing, CalendarDays, KeyRound, Loader2, Mail, MailCheck, ShieldCheck, UserRound } from "lucide-react"
+import {
+  BellRing,
+  CalendarDays,
+  KeyRound,
+  Loader2,
+  Mail,
+  MailCheck,
+  ShieldCheck,
+  Trash2,
+  TriangleAlert,
+  UserRound,
+} from "lucide-react"
 
 import { FormAlert } from "@/components/auth/FormAlert"
 import { FormField } from "@/components/auth/FormField"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { authClient } from "@/lib/auth/client"
 import { authErrorMessage } from "@/lib/auth/errors"
 import { fieldErrors, nomeSchema, trocarEmailSchema, trocarSenhaSchema, type FieldErrors } from "@/lib/auth/schemas"
@@ -73,6 +85,7 @@ export function PerfilView({ user, emailConfirmado }: { user: Usuario; emailConf
       <DadosPessoais user={user} />
       <Senha temSenha={user.temSenha} />
       <Avisos ativo={user.notificarPorEmail} />
+      <ExcluirConta temSenha={user.temSenha} />
     </div>
   )
 }
@@ -456,5 +469,166 @@ function Avisos({ ativo: inicial }: { ativo: boolean }) {
         </div>
       </div>
     </Secao>
+  )
+}
+
+/* ---------- Excluir conta ---------- */
+
+const PALAVRA_CONFIRMACAO = "EXCLUIR"
+
+// Duas etapas no mesmo diálogo: primeiro "tem certeza?", depois a senha (ou digitar EXCLUIR, para quem só usa Google)
+function ExcluirConta({ temSenha }: { temSenha: boolean }) {
+  const router = useRouter()
+  const [aberto, setAberto] = useState(false)
+  const [etapa, setEtapa] = useState<"confirmar" | "senha">("confirmar")
+  const [valor, setValor] = useState("")
+  const [erroCampo, setErroCampo] = useState<string>()
+  const [erro, setErro] = useState<string | null>(null)
+  const [excluindo, setExcluindo] = useState(false)
+
+  function alternar(proximo: boolean) {
+    if (excluindo) return
+    setAberto(proximo)
+    if (!proximo) {
+      setEtapa("confirmar")
+      setValor("")
+      setErroCampo(undefined)
+      setErro(null)
+    }
+  }
+
+  async function excluir(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    setErro(null)
+    if (temSenha && !valor) {
+      setErroCampo("Informe sua senha.")
+      return
+    }
+    if (!temSenha && valor.trim().toUpperCase() !== PALAVRA_CONFIRMACAO) {
+      setErroCampo(`Digite ${PALAVRA_CONFIRMACAO} para confirmar.`)
+      return
+    }
+    setErroCampo(undefined)
+    setExcluindo(true)
+    const { error } = await authClient.deleteUser(temSenha ? { password: valor } : {})
+    if (error) {
+      setExcluindo(false)
+      if (error.code === "INVALID_PASSWORD") setErroCampo("Senha incorreta.")
+      else setErro(authErrorMessage(error))
+      return
+    }
+    // A sessão acabou: volta para a landing e descarta o que estava em cache do painel
+    router.replace("/")
+    router.refresh()
+  }
+
+  return (
+    <section
+      aria-labelledby="excluir-conta-titulo"
+      className="flex flex-col gap-4 rounded-2xl border border-destructive/30 bg-card p-5 sm:flex-row sm:items-center sm:justify-between sm:p-8"
+    >
+      <div className="flex gap-3">
+        <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-destructive/10 text-destructive">
+          <Trash2 className="size-4.5" />
+        </span>
+        <div>
+          <h2 id="excluir-conta-titulo" className="text-lg font-semibold tracking-tight">
+            Excluir conta
+          </h2>
+          <p className="text-sm text-muted-foreground">
+            Apaga sua conta e todos os dados da fazenda. Não dá para desfazer.
+          </p>
+        </div>
+      </div>
+
+      <Dialog open={aberto} onOpenChange={alternar}>
+        <DialogTrigger asChild>
+          <Button variant="destructive" size="sm" className="self-start sm:self-auto">
+            Excluir conta
+          </Button>
+        </DialogTrigger>
+
+        {/* Ao abrir, o Radix foca o primeiro botão: "Cancelar", a opção segura */}
+        <DialogContent>
+          <span className="flex size-11 items-center justify-center rounded-xl bg-destructive/10 text-destructive">
+            <TriangleAlert className="size-5" />
+          </span>
+
+          {etapa === "confirmar" ? (
+            <>
+              <div className="flex flex-col gap-2">
+                <DialogTitle>Tem certeza que quer excluir sua conta?</DialogTitle>
+                <DialogDescription>
+                  Tudo será apagado para sempre: a fazenda, o rebanho, as pesagens, a sanidade, os talhões e os
+                  plantios. Não conseguimos recuperar depois.
+                </DialogDescription>
+              </div>
+              <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+                <DialogClose asChild>
+                  <Button variant="secondary">Cancelar</Button>
+                </DialogClose>
+                <Button variant="destructive" onClick={() => setEtapa("senha")}>
+                  Sim, quero excluir
+                </Button>
+              </div>
+            </>
+          ) : (
+            <form onSubmit={excluir} noValidate className="flex flex-col gap-5">
+              <div className="flex flex-col gap-2">
+                <DialogTitle>{temSenha ? "Confirme sua senha" : "Confirme a exclusão"}</DialogTitle>
+                <DialogDescription>
+                  {temSenha
+                    ? "Para sua segurança, digite a senha da sua conta para concluir a exclusão."
+                    : `Você entra com o Google, então não há senha. Digite ${PALAVRA_CONFIRMACAO} para concluir.`}
+                </DialogDescription>
+              </div>
+
+              {erro && <FormAlert>{erro}</FormAlert>}
+
+              {temSenha ? (
+                <FormField
+                  label="Senha"
+                  name="excluir-senha"
+                  type="password"
+                  autoComplete="current-password"
+                  autoFocus
+                  value={valor}
+                  onChange={(event) => {
+                    setValor(event.target.value)
+                    setErroCampo(undefined)
+                  }}
+                  error={erroCampo}
+                />
+              ) : (
+                <FormField
+                  label={`Digite ${PALAVRA_CONFIRMACAO}`}
+                  name="excluir-confirmacao"
+                  autoComplete="off"
+                  autoCapitalize="characters"
+                  spellCheck={false}
+                  autoFocus
+                  value={valor}
+                  onChange={(event) => {
+                    setValor(event.target.value)
+                    setErroCampo(undefined)
+                  }}
+                  error={erroCampo}
+                />
+              )}
+
+              <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+                <Button type="button" variant="secondary" disabled={excluindo} onClick={() => alternar(false)}>
+                  Cancelar
+                </Button>
+                <Button type="submit" variant="destructive" disabled={excluindo}>
+                  {excluindo && <Loader2 className="animate-spin" />}
+                  Excluir minha conta
+                </Button>
+              </div>
+            </form>
+          )}
+        </DialogContent>
+      </Dialog>
+    </section>
   )
 }

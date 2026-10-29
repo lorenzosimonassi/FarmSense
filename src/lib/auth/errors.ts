@@ -9,6 +9,7 @@ const MESSAGES: Record<string, string> = {
   INVALID_TOKEN: "Este link é inválido ou já expirou. Peça um novo.",
   PROPRIEDADE_INVALIDA: "Confira os dados da fazenda.",
   INVALID_PASSWORD: "Senha atual incorreta.",
+  SESSION_EXPIRED: "Por segurança, saia e entre de novo antes de continuar.",
 }
 
 export function authErrorMessage(error: { code?: string; status?: number } | null) {

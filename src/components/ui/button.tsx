@@ -17,6 +17,8 @@ const buttonVariants = cva(
           "bg-card text-primary border border-input shadow-xs hover:bg-accent hover:border-primary/30",
         outline:
           "border border-primary-foreground/30 bg-transparent text-current hover:bg-primary-foreground/10",
+        // Ações que não têm volta (excluir conta)
+        destructive: "bg-destructive text-white shadow-sm hover:bg-destructive/90 focus-visible:ring-destructive",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
       },
