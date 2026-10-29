@@ -42,8 +42,8 @@ const secoes: SecaoLegal[] = [
             apenas nome, e-mail e foto do perfil.
           </li>
           <li>
-            <strong>Fazenda:</strong> nome, município, UF, área, atividades, tipo de rebanho e, se você importar, o
-            contorno e o código do CAR.
+            <strong>Fazenda:</strong> nome, município, UF, área, atividades e tipo de rebanho. Se você quiser, também
+            o ponto da sede marcado no mapa e o contorno e o código do CAR.
           </li>
           <li>
             <strong>O que você registra:</strong> animais, pesagens, vacinas e outras aplicações, talhões (com o contorno
@@ -76,7 +76,7 @@ const secoes: SecaoLegal[] = [
               "Execução do contrato (art. 7º, V)",
             ],
             [
-              "Mostrar o painel, relatórios, mapa e calendário",
+              "Mostrar o painel, relatórios, mapa, calendário e previsão do tempo",
               "Dados da fazenda e tudo o que você registra",
               "Execução do contrato (art. 7º, V)",
             ],
@@ -129,8 +129,13 @@ const secoes: SecaoLegal[] = [
             <strong>Google</strong>: só se você escolher entrar com a conta Google.
           </li>
           <li>
-            <strong>Open-Meteo</strong>: recebe o nome do município da fazenda para devolver a previsão do tempo. Nenhum
-            dado seu (nome, e-mail) é enviado.
+            <strong>Open-Meteo</strong>: recebe o nome do município ou, se você marcou a fazenda no mapa, as coordenadas
+            arredondadas (precisão de cerca de 1 km) para devolver a previsão do tempo. Nenhum dado seu (nome, e-mail) é
+            enviado.
+          </li>
+          <li>
+            <strong>Photon (komoot)</strong>: recebe o texto digitado na busca de endereço do mapa e a região aproximada
+            da fazenda, para sugerir lugares. A busca passa pelo servidor do FarmSense, então seu IP não é enviado.
           </li>
           <li>
             <strong>OpenStreetMap e Esri</strong>: fornecem as imagens do mapa. Como em qualquer site com mapa, o seu

@@ -234,6 +234,53 @@
   cursor: grab;
 }
 
+/* Pino do lugar buscado: anel pulsando para achar no satélite, sem confundir com os cantos do talhão */
+.talhao-destino {
+  background: var(--primary);
+  border: 3px solid #fff;
+  border-radius: 9999px;
+  box-shadow: 0 0 0 0 rgb(255 255 255 / 0.7), 0 1px 4px rgb(0 0 0 / 0.45);
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .talhao-destino {
+    animation: talhao-destino-pulso 1.8s ease-out 3;
+  }
+}
+
+@keyframes talhao-destino-pulso {
+  to {
+    box-shadow: 0 0 0 14px rgb(255 255 255 / 0), 0 1px 4px rgb(0 0 0 / 0.45);
+  }
+}
+
+/* Pino da sede da fazenda (Configurações): gota com a ponta no ponto exato */
+.fazenda-pino {
+  cursor: grab;
+}
+
+.fazenda-pino-gota {
+  position: absolute;
+  inset: 2px 4px 6px;
+  background: var(--primary);
+  border: 3px solid #fff;
+  border-radius: 50% 50% 50% 0;
+  box-shadow: 0 2px 6px rgb(0 0 0 / 0.45);
+  transform: rotate(-45deg);
+}
+
+.fazenda-pino-gota::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  background: #fff;
+}
+
 .talhao-vertice-inicial {
   background: var(--milho);
   border-color: #fff;

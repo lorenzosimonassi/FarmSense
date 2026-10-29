@@ -112,13 +112,20 @@ export async function localizarMunicipio(municipio: string, uf: string) {
   }
 }
 
-export async function buscarClima(municipio: string, uf: string): Promise<ResultadoClima> {
+// Com o ponto marcado em Configurações, a previsão é da fazenda; sem ele, do centro do município
+export async function buscarClima(
+  municipio: string,
+  uf: string,
+  ponto?: { lat: number; lng: number } | null
+): Promise<ResultadoClima> {
   try {
-    const lugar = await geocodificar(municipio, uf)
+    const lugar = ponto
+      ? { name: municipio, latitude: ponto.lat, longitude: ponto.lng }
+      : await geocodificar(municipio, uf)
     if (!lugar) return { status: "nao-encontrado" }
 
     const params = new URLSearchParams({
-      // Arredonda para o cache ser compartilhado por fazendas do mesmo município
+      // Duas casas (~1 km): precisão de sobra para previsão, e o cache é compartilhado por quem está perto
       latitude: lugar.latitude.toFixed(2),
       longitude: lugar.longitude.toFixed(2),
       current: "temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code,is_day",

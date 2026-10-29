@@ -3,11 +3,11 @@ import { contar as contarAplicacoes } from "@/server/services/aplicacao"
 import { existe as existeLimite } from "@/server/services/limite-fazenda"
 import { contar as contarPesagens } from "@/server/services/pesagem"
 import { contar as contarPlantios } from "@/server/services/plantio"
-import type { Propriedade } from "@/server/services/propriedade"
+import { pontoMarcado, type Propriedade } from "@/server/services/propriedade"
 import { contar as contarTalhoes } from "@/server/services/talhao"
 import type { Atividade } from "@/shared/schemas/propriedade"
 
-export type PassoId = "fazenda" | "animais" | "pesagem" | "vacinas" | "talhoes" | "safra"
+export type PassoId = "fazenda" | "localizacao" | "animais" | "pesagem" | "vacinas" | "talhoes" | "safra"
 
 export type Passo = {
   id: PassoId
@@ -78,8 +78,17 @@ export async function listarPassos(propriedade: Propriedade): Promise<Passo[]> {
       concluido: contagem.safras > 0,
     },
     {
+      id: "localizacao",
+      titulo: "Marque onde fica sua fazenda",
+      descricao: "Com o ponto no mapa, a previsão do tempo é da sua fazenda, não do centro da cidade.",
+      href: "/painel/configuracoes#localizacao",
+      acao: "Marcar no mapa",
+      // O contorno do CAR já mostra onde a fazenda está
+      concluido: pontoMarcado(propriedade) !== null || limite,
+    },
+    {
       id: "fazenda",
-      titulo: "Localize sua fazenda",
+      titulo: "Importe os limites da fazenda",
       descricao: "Importe o arquivo do CAR: o contorno aparece no mapa e a área total é calculada sozinha.",
       href: "/painel/configuracoes#limites",
       acao: "Importar CAR",

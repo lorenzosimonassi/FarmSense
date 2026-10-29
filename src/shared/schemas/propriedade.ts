@@ -93,3 +93,14 @@ export const propriedadeSchema = z
 
 export type PropriedadeInput = z.input<typeof propriedadeSchema>
 export type PropriedadeData = z.output<typeof propriedadeSchema>
+
+// Ponto da fazenda marcado no mapa. Caixa larga em volta do Brasil: pega erro de digitação (lat/lng trocadas)
+export const localizacaoSchema = z.object({
+  lat: z.number({ error: "Marque o ponto no mapa." }).min(-34, "Esse ponto fica fora do Brasil.").max(6, "Esse ponto fica fora do Brasil."),
+  lng: z
+    .number({ error: "Marque o ponto no mapa." })
+    .min(-74.5, "Esse ponto fica fora do Brasil.")
+    .max(-34, "Esse ponto fica fora do Brasil."),
+})
+
+export type Localizacao = z.infer<typeof localizacaoSchema>

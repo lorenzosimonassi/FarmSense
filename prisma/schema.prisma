@@ -96,6 +96,9 @@ model Propriedade {
   areaTotalHa  Decimal?       @db.Decimal(10, 2)
   atividades   Atividade[]
   tipoRebanho  TipoRebanho?
+  // Ponto marcado no mapa em Configurações (opcional): centraliza os mapas e refina a previsão do tempo
+  latitude     Float?
+  longitude    Float?
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
   animais      Animal[]

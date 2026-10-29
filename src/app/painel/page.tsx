@@ -38,7 +38,7 @@ export default async function DashboardPage() {
     <>
       {/* A previsão vem de uma API externa: o resto da página não espera por ela */}
       <Suspense fallback={<ClimaSkeleton />}>
-        <ClimaFazenda municipio={propriedade.municipio} uf={propriedade.uf} />
+        <ClimaFazenda propriedade={propriedade} />
       </Suspense>
       <CardFazenda propriedade={propriedade} />
     </>

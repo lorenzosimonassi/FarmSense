@@ -8,6 +8,7 @@ import { MapContainer, Marker, Polygon, Polyline, TileLayer, Tooltip, useMap, us
 import { Check, Crosshair, Layers, LocateFixed, Maximize, Pencil, RotateCcw, Trash2, Undo2, X } from "lucide-react"
 
 import { cn } from "@/lib/utils"
+import type { Lugar } from "@/shared/busca-local"
 import { areaHa, autointersecta, formatarHa, limites, type Contorno, type Ponto } from "@/shared/geo"
 
 // Este módulo usa `window` (Leaflet): é importado só no navegador, via next/dynamic em ./index.tsx
@@ -98,6 +99,7 @@ function BaseMapa({
   onMapa,
   interativo = true,
   rotuloEnquadrar = "Enquadrar talhões",
+  onLocalizado,
 }: {
   alvoInicial: Enquadramento | null
   // Alvo do botão "enquadrar" (padrão: o inicial)
@@ -108,6 +110,8 @@ function BaseMapa({
   onMapa?: (map: L.Map) => void
   interativo?: boolean
   rotuloEnquadrar?: string
+  // Além de voar até a posição do GPS (ex.: marcar a fazenda ali)
+  onLocalizado?: (ponto: { lat: number; lng: number }) => void
 }) {
   const [map, setMap] = useState<L.Map | null>(null)
   const [camada, setCamada] = useState<Camada>("satelite")
@@ -138,6 +142,7 @@ function BaseMapa({
     map.once("locationfound", (event: L.LocationEvent) => {
       setLocalizando(false)
       map.flyTo(event.latlng, Math.max(map.getZoom(), 16))
+      onLocalizado?.({ lat: event.latlng.lat, lng: event.latlng.lng })
     })
     map.once("locationerror", () => {
       setLocalizando(false)
@@ -296,6 +301,79 @@ function PerimetroFazenda({ limite }: { limite: Contorno[] | null }) {
   return <Polygon positions={limite.map((contorno) => contorno.map(paraLatLng))} pathOptions={ESTILO.fazenda} />
 }
 
+/* ---------- Localização da fazenda: um pino no mapa ---------- */
+
+// O Leaflet posiciona o ícone com transform: a gota girada fica num elemento interno
+const ICONE_FAZENDA = L.divIcon({
+  className: "fazenda-pino",
+  html: '<span class="fazenda-pino-gota"></span>',
+  iconSize: [30, 30],
+  iconAnchor: [15, 30],
+})
+
+function CliqueMarca({ onPonto }: { onPonto: (ponto: { lat: number; lng: number }) => void }) {
+  useMapEvents({ click: (event) => onPonto({ lat: event.latlng.lat, lng: event.latlng.lng }) })
+  return null
+}
+
+export function MapaLocalizacao({
+  ponto,
+  onChange,
+  centro,
+  limite = null,
+  destino = null,
+  className,
+}: {
+  ponto: { lat: number; lng: number } | null
+  onChange: (ponto: { lat: number; lng: number }) => void
+  // Onde abrir sem ponto marcado (centro do município)
+  centro?: { lat: number; lng: number } | null
+  limite?: Contorno[] | null
+  destino?: Lugar | null
+  className?: string
+}) {
+  const alvo = useMemo<Enquadramento | null>(() => {
+    if (ponto) return { centro: ponto }
+    if (limite?.length) return { contornos: limite }
+    if (centro) return { centro }
+    return null
+    // Só o enquadramento de abertura; depois quem move o mapa é o produtor
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [centro, limite])
+
+  return (
+    <BaseMapa
+      alvoInicial={alvo}
+      enquadrarDeNovo={ponto ? { centro: ponto } : alvo}
+      rotuloEnquadrar={ponto ? "Ir para o ponto marcado" : "Enquadrar a fazenda"}
+      onLocalizado={onChange}
+      className={cn("h-80 sm:h-96", className)}
+      overlay={
+        !ponto && (
+          <p className="pointer-events-none absolute inset-x-3 bottom-7 z-[1000] mx-auto w-fit rounded-lg bg-card/95 px-3 py-2 text-center text-[13px] font-medium shadow-md">
+            Clique no mapa onde fica a sede da fazenda
+          </p>
+        )
+      }
+    >
+      <PerimetroFazenda limite={limite} />
+      {/* O próprio pino da fazenda vai para o lugar buscado: sem pino extra */}
+      <VoarPara destino={destino} pino={false} />
+      <CliqueMarca onPonto={onChange} />
+      {ponto && (
+        <Marker
+          position={[ponto.lat, ponto.lng]}
+          icon={ICONE_FAZENDA}
+          draggable
+          autoPan
+          title="Arraste para ajustar"
+          eventHandlers={{ dragend: (event) => onChange((event.target as L.Marker).getLatLng()) }}
+        />
+      )}
+    </BaseMapa>
+  )
+}
+
 /* ---------- Limites da fazenda: o perímetro importado do CAR ---------- */
 
 export function MapaFazenda({ contornos, className }: { contornos: Contorno[]; className?: string }) {
@@ -317,6 +395,31 @@ export function MapaFazenda({ contornos, className }: { contornos: Contorno[]; c
 const ICONE_VERTICE = L.divIcon({ className: "talhao-vertice", iconSize: [14, 14] })
 const ICONE_INICIAL = L.divIcon({ className: "talhao-vertice talhao-vertice-inicial", iconSize: [18, 18] })
 const ICONE_MEIO = L.divIcon({ className: "talhao-meio", iconSize: [10, 10] })
+const ICONE_DESTINO = L.divIcon({ className: "talhao-destino", iconSize: [18, 18] })
+
+// Lugar escolhido na busca: voa até ele e deixa um pino de referência (não atrapalha os cliques do desenho)
+function VoarPara({ destino, pino = true }: { destino: Lugar | null; pino?: boolean }) {
+  const map = useMap()
+  useEffect(() => {
+    if (!destino) return
+    const [oeste, sul, leste, norte] = destino.caixa ?? [destino.lng, destino.lat, destino.lng, destino.lat]
+    // Estrada, bairro ou cidade: enquadra a área toda; endereço ou coordenada: chega perto para desenhar
+    if (leste - oeste > 0.002 || norte - sul > 0.002) {
+      map.flyToBounds(L.latLngBounds([sul, oeste], [norte, leste]), { padding: [32, 32], maxZoom: 17, duration: 1.2 })
+    } else {
+      map.flyTo([destino.lat, destino.lng], 17, { duration: 1.2 })
+    }
+  }, [map, destino])
+
+  if (!destino || !pino) return null
+  return (
+    <Marker position={[destino.lat, destino.lng]} icon={ICONE_DESTINO} interactive={false} keyboard={false}>
+      <Tooltip direction="top" offset={[0, -10]} className="talhao-rotulo">
+        {destino.titulo}
+      </Tooltip>
+    </Marker>
+  )
+}
 
 type Modo = "vazio" | "desenhando" | "pronto"
 
@@ -353,10 +456,13 @@ export function MapaEditor({
   outros = [],
   centroFazenda,
   limite = null,
+  destino = null,
   className,
 }: {
   valor: Contorno | null
   onChange: (mudanca: MudancaContorno) => void
+  // Lugar escolhido na busca de endereço, acima do mapa
+  destino?: Lugar | null
   // Demais talhões da fazenda, como referência para desenhar ao lado deles
   outros?: TalhaoNoMapa[]
   centroFazenda?: { lat: number; lng: number } | null
@@ -502,6 +608,7 @@ export function MapaEditor({
         }
       >
         <PerimetroFazenda limite={limite} />
+        <VoarPara destino={destino} />
         <CliquesDoMapa ativo={desenhando} onPonto={(ponto) => emitir([...pontos, ponto], modo)} onCursor={setCursor} />
 
         {outros.map(

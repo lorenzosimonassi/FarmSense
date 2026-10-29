@@ -34,4 +34,9 @@ export const MapaFazenda = dynamic(() => import("./MapaTalhoes").then((mod) => m
   loading: () => <CarregandoMapa className="h-80" />,
 })
 
+export const MapaLocalizacao = dynamic(() => import("./MapaTalhoes").then((mod) => mod.MapaLocalizacao), {
+  ssr: false,
+  loading: () => <CarregandoMapa className="h-80 sm:h-96" />,
+})
+
 export type { MudancaContorno, TalhaoNoMapa } from "./MapaTalhoes"

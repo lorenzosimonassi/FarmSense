@@ -3,6 +3,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
 import { apiFetch } from "@/lib/api/client"
+import { BUSCA_MINIMO, type Lugar } from "@/shared/busca-local"
 import type { Talhao, TalhaoInput, TalhaoNaLista } from "@/shared/schemas/talhao"
 
 export type ListaTalhoes = { items: TalhaoNaLista[]; total: number; areaHa: number }
@@ -33,6 +34,18 @@ export function useLocalizacaoFazenda() {
     queryKey: ["propriedade", "localizacao"],
     queryFn: () => apiFetch<{ lat: number; lng: number } | null>("/propriedade/localizacao"),
     staleTime: Infinity,
+  })
+}
+
+// Sugestões de endereço enquanto digita; o mesmo texto não é buscado de novo na sessão
+export function useBuscaLugares(q: string) {
+  return useQuery({
+    queryKey: ["geocodificar", q.toLowerCase()],
+    queryFn: () => apiFetch<{ items: Lugar[] }>("/geocodificar", { params: { q } }),
+    enabled: q.length >= BUSCA_MINIMO,
+    staleTime: Infinity,
+    retry: false,
+    placeholderData: (anterior) => anterior,
   })
 }
 

@@ -18,6 +18,7 @@ import Link from "next/link"
 
 import { Skeleton } from "@/components/painel/states"
 import { buscarClima, type Condicao } from "@/server/services/clima"
+import { pontoDaFazenda, type Propriedade } from "@/server/services/propriedade"
 import { cn } from "@/lib/utils"
 
 const CONDICAO: Record<Condicao, { label: string; icon: LucideIcon; noite?: LucideIcon }> = {
@@ -61,8 +62,10 @@ function Cabecalho({ local }: { local: string }) {
   )
 }
 
-export async function ClimaFazenda({ municipio, uf }: { municipio: string; uf: string }) {
-  const resultado = await buscarClima(municipio, uf)
+export async function ClimaFazenda({ propriedade }: { propriedade: Propriedade }) {
+  const { municipio, uf } = propriedade
+  // Ponto marcado ou centro do CAR, quando existem: a previsão fica na fazenda, não no centro da cidade
+  const resultado = await buscarClima(municipio, uf, await pontoDaFazenda(propriedade))
 
   if (resultado.status !== "ok") {
     const naoEncontrado = resultado.status === "nao-encontrado"

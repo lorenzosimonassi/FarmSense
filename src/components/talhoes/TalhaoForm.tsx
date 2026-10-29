@@ -6,6 +6,7 @@ import { Loader2 } from "lucide-react"
 import { FormAlert } from "@/components/auth/FormAlert"
 import { FormField } from "@/components/auth/FormField"
 import { TextareaField } from "@/components/rebanho/campos"
+import { BuscaLugar } from "@/components/talhoes/BuscaLugar"
 import { MapaEditor, type MudancaContorno } from "@/components/talhoes/mapa"
 import { Button } from "@/components/ui/button"
 import { ApiError } from "@/lib/api/client"
@@ -13,6 +14,7 @@ import { useLimiteFazenda } from "@/lib/api/hooks/propriedade"
 import { useLocalizacaoFazenda, useSalvarTalhao, useTalhoes } from "@/lib/api/hooks/talhoes"
 import type { FieldErrors } from "@/lib/auth/schemas"
 import { fieldErrors } from "@/lib/auth/schemas"
+import type { Lugar } from "@/shared/busca-local"
 import { areaHa, formatarHa, type Contorno } from "@/shared/geo"
 import { parseDecimal } from "@/shared/numeros"
 import { talhaoSchema, type Talhao } from "@/shared/schemas/talhao"
@@ -48,6 +50,8 @@ export function TalhaoForm({
   // A área segue o desenho até o produtor digitar outra (ex.: área do documento do imóvel, que desconta carreadores)
   const [areaManual, setAreaManual] = useState(() => Boolean(talhao?.contorno && difere(textoArea(talhao.areaHa), areaHa(talhao.contorno))))
   const [desenhando, setDesenhando] = useState(false)
+  // Só posiciona o mapa; não é salvo com o talhão
+  const [destino, setDestino] = useState<Lugar | null>(null)
   // Muda a cada "salvar e cadastrar outro" para o editor voltar vazio
   const [rodada, setRodada] = useState(0)
   const [errors, setErrors] = useState<FieldErrors<Values>>({})
@@ -167,10 +171,13 @@ export function TalhaoForm({
           )}
         </div>
         <p className="text-[13px] text-muted-foreground">
-          Marque os cantos do talhão na imagem de satélite. A área é calculada sozinha.
+          Se quiser, busque o endereço para o mapa ir direto ao lugar. Depois marque os cantos do talhão na imagem de
+          satélite; a área é calculada sozinha.
         </p>
+        <BuscaLugar onEscolher={setDestino} />
         <MapaEditor
           key={rodada}
+          destino={destino}
           valor={values.contorno}
           onChange={mudarContorno}
           outros={outros}

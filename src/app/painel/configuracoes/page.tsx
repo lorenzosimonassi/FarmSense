@@ -4,11 +4,12 @@ import { redirect } from "next/navigation"
 
 import { PageHeader } from "@/components/painel/states"
 import { LimitesFazenda } from "@/components/propriedade/LimitesFazenda"
+import { LocalizacaoFazenda } from "@/components/propriedade/LocalizacaoFazenda"
 import { toPropriedadeValues } from "@/components/propriedade/values"
 import { PropriedadeForm } from "@/components/propriedade/PropriedadeForm"
 import { auth } from "@/lib/auth"
 import { buscar as buscarLimite } from "@/server/services/limite-fazenda"
-import { buscarPorUsuario } from "@/server/services/propriedade"
+import { buscarPorUsuario, pontoMarcado } from "@/server/services/propriedade"
 
 export const metadata: Metadata = {
   title: "Configurações | FarmSense",
@@ -32,6 +33,7 @@ export default async function ConfiguracoesPage() {
           initialValues={toPropriedadeValues(propriedade)}
         />
       </section>
+      <LocalizacaoFazenda inicial={pontoMarcado(propriedade)} municipio={propriedade.municipio} />
       <LimitesFazenda inicial={limite} areaTotalHa={propriedade.areaTotalHa} />
     </div>
   )
