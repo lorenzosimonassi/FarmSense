@@ -170,6 +170,11 @@
   p {
     text-wrap: pretty;
   }
+  /* Edge desenha o próprio "olho" na senha; o FormField já tem um */
+  input::-ms-reveal,
+  input::-ms-clear {
+    display: none;
+  }
 }
 
 @layer utilities {
