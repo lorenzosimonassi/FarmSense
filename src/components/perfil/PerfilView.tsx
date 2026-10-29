@@ -1,10 +1,13 @@
 "use client"
 
 import { useState } from "react"
+import Link from "next/link"
 import { useRouter } from "next/navigation"
 import {
   BellRing,
   CalendarDays,
+  Download,
+  FileLock2,
   KeyRound,
   Loader2,
   Mail,
@@ -85,6 +88,7 @@ export function PerfilView({ user, emailConfirmado }: { user: Usuario; emailConf
       <DadosPessoais user={user} />
       <Senha temSenha={user.temSenha} />
       <Avisos ativo={user.notificarPorEmail} />
+      <SeusDados />
       <ExcluirConta temSenha={user.temSenha} />
     </div>
   )
@@ -468,6 +472,40 @@ function Avisos({ ativo: inicial }: { ativo: boolean }) {
           </ul>
         </div>
       </div>
+    </Secao>
+  )
+}
+
+/* ---------- Seus dados (LGPD) ---------- */
+
+function SeusDados() {
+  return (
+    <Secao
+      id="seus-dados"
+      icone={FileLock2}
+      titulo="Seus dados"
+      descricao="Tudo o que você registra no FarmSense é seu. Leve uma cópia quando quiser."
+    >
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <p className="max-w-md text-sm text-muted-foreground">
+          Um arquivo JSON com sua conta, a fazenda, o rebanho, as pesagens, a sanidade, os talhões, os plantios e os
+          avisos. Senhas e chaves de acesso ficam de fora.
+        </p>
+        {/* Link comum: o navegador baixa o arquivo direto, com o cookie da sessão */}
+        <Button variant="secondary" size="sm" asChild className="self-start sm:self-auto">
+          <a href="/api/perfil/dados" download>
+            <Download />
+            Baixar meus dados
+          </a>
+        </Button>
+      </div>
+      <p className="mt-4 text-[13px] text-muted-foreground">
+        Saiba como usamos e protegemos seus dados na{" "}
+        <Link href="/privacidade" className="font-medium text-primary underline-offset-4 hover:underline">
+          Política de Privacidade
+        </Link>
+        .
+      </p>
     </Secao>
   )
 }

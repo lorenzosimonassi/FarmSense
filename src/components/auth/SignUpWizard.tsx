@@ -181,6 +181,19 @@ export function SignUpWizard({ googleSlot }: { googleSlot?: React.ReactNode }) {
               <ArrowRight />
             </Button>
 
+            {/* Base legal é a execução do serviço (LGPD, art. 7º, V), então basta informar; não precisa de checkbox */}
+            <p className="text-center text-xs leading-relaxed text-muted-foreground">
+              Ao criar a conta, você concorda com os{" "}
+              <Link href="/termos" target="_blank" className="font-medium text-foreground underline underline-offset-2">
+                Termos de uso
+              </Link>{" "}
+              e com a{" "}
+              <Link href="/privacidade" target="_blank" className="font-medium text-foreground underline underline-offset-2">
+                Política de Privacidade
+              </Link>
+              .
+            </p>
+
             <p className="text-center text-sm text-muted-foreground">
               Já tem uma conta?{" "}
               <Link href="/login" className="font-semibold text-primary hover:underline">

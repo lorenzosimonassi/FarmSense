@@ -1,6 +1,8 @@
 import Image from "next/image"
+import Link from "next/link"
 
 import { Separator } from "@/components/ui/separator"
+import { LINKS_LEGAIS } from "@/shared/legal"
 
 const farmsenseLogoWhite = "/logo/farmsense-logo-white.png"
 
@@ -46,9 +48,22 @@ export function Footer() {
 
         <Separator className="bg-primary-foreground/10" />
 
-        <p className="text-xs text-primary-foreground/50">
-          © 2026 FarmSense. Todos os direitos reservados.
-        </p>
+        <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-xs text-primary-foreground/50">
+            © 2026 FarmSense. Todos os direitos reservados.
+          </p>
+          <nav aria-label="Documentos legais" className="flex gap-5">
+            {LINKS_LEGAIS.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="py-1 text-xs text-primary-foreground/60 transition-colors hover:text-primary-foreground"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
+        </div>
       </div>
     </footer>
   )

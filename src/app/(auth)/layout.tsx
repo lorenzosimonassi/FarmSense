@@ -3,6 +3,7 @@ import Image from "next/image"
 import Link from "next/link"
 
 import { AuthAside, AuthAsideFallback } from "@/components/auth/AuthAside"
+import { LINKS_LEGAIS } from "@/shared/legal"
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -19,7 +20,14 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
           />
         </Link>
         <div className="mx-auto flex w-full max-w-sm flex-1 flex-col justify-center py-10 sm:py-14">{children}</div>
-        <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} FarmSense</p>
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
+          <p>© {new Date().getFullYear()} FarmSense</p>
+          {LINKS_LEGAIS.map((link) => (
+            <Link key={link.href} href={link.href} className="py-1 transition-colors hover:text-foreground">
+              {link.label}
+            </Link>
+          ))}
+        </div>
       </main>
 
       <Suspense fallback={<AuthAsideFallback />}>
