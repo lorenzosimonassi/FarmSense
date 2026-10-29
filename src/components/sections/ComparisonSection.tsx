@@ -9,7 +9,7 @@ const ROWS = [
 
 export function ComparisonSection() {
   return (
-    <section className="section-y border-t border-border">
+    <section className="section-y">
       <div className="container-page">
         <div className="max-w-2xl">
           <h2 className="text-heading font-bold tracking-tight">Do caderno ao painel</h2>
