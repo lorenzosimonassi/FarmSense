@@ -13,7 +13,7 @@ export default function SignUpPage() {
   // Quem entra pelo Google preenche a fazenda depois, em /primeiro-acesso
   const googleSlot = isGoogleEnabled ? (
     <>
-      <GoogleButton />
+      <GoogleButton signUp />
       <AuthDivider />
     </>
   ) : null

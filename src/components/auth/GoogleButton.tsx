@@ -29,7 +29,7 @@ function GoogleIcon() {
   )
 }
 
-export function GoogleButton() {
+export function GoogleButton({ signUp = false }: { signUp?: boolean }) {
   const [pending, setPending] = useState(false)
 
   async function handleClick() {
@@ -39,6 +39,7 @@ export function GoogleButton() {
       provider: "google",
       callbackURL: "/painel",
       errorCallbackURL: "/login",
+      requestSignUp: signUp,
     })
     if (error) setPending(false)
   }

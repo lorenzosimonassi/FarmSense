@@ -136,6 +136,8 @@ export const auth = betterAuth({
           clientId: process.env.GOOGLE_CLIENT_ID!,
           clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
           prompt: "select_account",
+          // Só cria conta quando vem do /cadastro (requestSignUp); no /login, conta inexistente vira erro
+          disableImplicitSignUp: true,
         },
       }
     : {},

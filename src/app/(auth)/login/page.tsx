@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import Link from "next/link"
 
 import { FormAlert } from "@/components/auth/FormAlert"
 import { AuthDivider, GoogleButton } from "@/components/auth/GoogleButton"
@@ -20,7 +21,16 @@ export default async function SignInPage(props: PageProps<"/login">) {
         <p className="mt-2 text-sm text-muted-foreground">Entre com seu e-mail e senha para acessar o painel.</p>
       </div>
       <div className="flex flex-col gap-5">
-        {error && <FormAlert>Não foi possível entrar com o Google. Tente novamente.</FormAlert>}
+        {error === "signup_disabled" ? (
+          <FormAlert>
+            Não existe conta com este e-mail do Google.{" "}
+            <Link href="/cadastro" className="font-semibold underline">
+              Criar conta
+            </Link>
+          </FormAlert>
+        ) : (
+          error && <FormAlert>Não foi possível entrar com o Google. Tente novamente.</FormAlert>
+        )}
         {isGoogleEnabled && (
           <>
             <GoogleButton />
